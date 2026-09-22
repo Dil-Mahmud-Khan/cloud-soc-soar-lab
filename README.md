@@ -7,6 +7,8 @@ An automated detection and response project connecting LimaCharlie EDR, Tines SO
 * **Live SecOps Console:** [Interactive Dashboard Demo](https://dil-mahmud-khan.github.io/cloud-soc-soar-lab/dashboard/)
 * **GitHub Actions:** [![Validate Detections, Playbooks & Tools](https://github.com/Dil-Mahmud-Khan/cloud-soc-soar-lab/actions/workflows/validate-rules.yml/badge.svg)](https://github.com/Dil-Mahmud-Khan/cloud-soc-soar-lab/actions/workflows/validate-rules.yml)
 
+![SecOps Cloud Console](docs/screenshots/dashboard-console.png)
+
 ---
 
 ## Why I Built This Project
