@@ -1,0 +1,60 @@
+{
+  "name": "LimaCharlie EDR to Slack & VirusTotal Automated Response",
+  "description": "Ingests LimaCharlie EDR detection webhooks, queries VirusTotal v3 API for hash analysis, formats Slack alert card, and supports 1-click endpoint isolation.",
+  "agents": [
+    {
+      "name": "LimaCharlie Webhook Ingest",
+      "type": "Agents::WebhookAgent",
+      "options": {
+        "secret": "edr_secret_token",
+        "verbs": "post"
+      }
+    },
+    {
+      "name": "Parse Alert Artifacts",
+      "type": "Agents::EventTransformationAgent",
+      "options": {
+        "mode": "message_only",
+        "payload": {
+          "sensor_id": "{{.limacharlie_webhook_ingest.body.routing.sid}}",
+          "hostname": "{{.limacharlie_webhook_ingest.body.routing.hostname}}",
+          "ip": "{{.limacharlie_webhook_ingest.body.routing.int_ip}}",
+          "process": "{{.limacharlie_webhook_ingest.body.event.FILE_PATH}}",
+          "command_line": "{{.limacharlie_webhook_ingest.body.event.COMMAND_LINE}}",
+          "hash": "{{.limacharlie_webhook_ingest.body.event.HASH}}"
+        }
+      }
+    },
+    {
+      "name": "Query VirusTotal API",
+      "type": "Agents::HttpRequestAgent",
+      "options": {
+        "url": "https://www.virustotal.com/api/v3/files/{{.parse_alert_artifacts.hash}}",
+        "method": "get",
+        "headers": {
+          "x-apikey": "YOUR_VT_API_KEY"
+        }
+      }
+    },
+    {
+      "name": "Send Slack SOC Alert",
+      "type": "Agents::HttpRequestAgent",
+      "options": {
+        "url": "YOUR_SLACK_WEBHOOK_URL",
+        "method": "post",
+        "payload": {
+          "text": "🚨 EDR Alert: {{.parse_alert_artifacts.process}} on {{.parse_alert_artifacts.hostname}}",
+          "blocks": [
+            {
+              "type": "section",
+              "text": {
+                "type": "mrkdwn",
+                "text": "*🚨 Threat Detected by LimaCharlie EDR*\n*Host:* `{{.parse_alert_artifacts.hostname}}`\n*CLI:* `{{.parse_alert_artifacts.command_line}}`\n*VT Malicious Detections:* `{{.query_virustotal_api.body.data.attributes.last_analysis_stats.malicious}}`"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+# ==============================================================================
+# Rule: Suppress Authorized Enterprise Certificate Sync Activity
+# Author: Dil Mahmud Khan
+# Description: Prevents false positive alerts when the legitimate Task Scheduler
+#              synchronizes internal root certificates.
+# ==============================================================================
+
+detect:
+  event: NEW_PROCESS
+  op: and
+  rules:
+    - op: ends with
+      path: event/FILE_PATH
+      value: certutil.exe
+    - op: contains
+      path: event/COMMAND_LINE
+      value: -syncWithWU
+    - op: is
+      path: event/PARENT/FILE_PATH
+      value: C:\Windows\System32\svchost.exe
+
+respond:
+  # Action 'suppress' prevents event from generating a notification
+  - action: suppress
+    name: "Suppress: Legitimate IT Certificate Sync"
+    duration: 86400

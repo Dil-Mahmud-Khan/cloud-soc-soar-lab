@@ -1,0 +1,30 @@
+[
+  {
+    "ioc": "198.51.100.42",
+    "type": "ipv4",
+    "threat": "Cobalt Strike C2 Beacon",
+    "confidence": 95,
+    "source": "ThreatFeed-EmergingThreats"
+  },
+  {
+    "ioc": "203.0.113.88",
+    "type": "ipv4",
+    "threat": "IcedID Banking Trojan C2",
+    "confidence": 90,
+    "source": "AbuseIPDB-HighConfidence"
+  },
+  {
+    "ioc": "275a021bbfb6489e54d471899f7db9d1663fc695ec2fe2a2c4538aabf651fd0f",
+    "type": "sha256",
+    "threat": "EICAR Test Payload / Stager",
+    "confidence": 100,
+    "source": "Internal-SOC-Lab"
+  },
+  {
+    "ioc": "c9284f1b88e14781290348719283471029348102934810293481029348102934",
+    "type": "sha256",
+    "threat": "LockBit Ransomware Dropper",
+    "confidence": 98,
+    "source": "AlienVault-OTX"
+  }
+]
