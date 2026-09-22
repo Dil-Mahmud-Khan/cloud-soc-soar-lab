@@ -3,194 +3,501 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cloud SOC & SOAR Operations Console | Dil Mahmud Khan</title>
+  <title>SecOps Cloud Console | LimaCharlie EDR & Tines SOAR</title>
   <style>
     :root {
-      --bg-dark: #0f172a;
-      --card-bg: #1e293b;
-      --border-color: #334155;
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --accent-blue: #38bdf8;
-      --accent-green: #22c55e;
-      --accent-red: #ef4444;
-      --accent-yellow: #f59e0b;
-      --accent-purple: #a855f7;
+      --bg-body: #070b14;
+      --bg-sidebar: #0b1120;
+      --bg-card: #0f172a;
+      --bg-card-hover: #1e293b;
+      --border: #1e293b;
+      --border-accent: #334155;
+      --text: #f1f5f9;
+      --text-muted: #64748b;
+      --text-secondary: #94a3b8;
+      --red: #ef4444;
+      --red-bg: rgba(239, 68, 68, 0.12);
+      --yellow: #f59e0b;
+      --yellow-bg: rgba(245, 158, 11, 0.12);
+      --green: #10b981;
+      --green-bg: rgba(16, 185, 129, 0.12);
+      --blue: #38bdf8;
+      --blue-bg: rgba(56, 189, 248, 0.12);
+      --purple: #a855f7;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace; }
-    body { background: var(--bg-dark); color: var(--text-main); padding: 24px; line-height: 1.5; }
-    header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; border-bottom: 1px solid var(--border-color); margin-bottom: 24px; }
-    .badge { display: inline-block; padding: 4px 10px; border-radius: 9999px; font-size: 12px; font-weight: 600; text-transform: uppercase; }
-    .badge-live { background: rgba(34, 197, 94, 0.2); color: var(--accent-green); border: 1px solid var(--accent-green); }
-    .badge-isolated { background: rgba(239, 68, 68, 0.2); color: var(--accent-red); border: 1px solid var(--accent-red); }
-    .badge-critical { background: rgba(239, 68, 68, 0.2); color: var(--accent-red); }
-    .badge-high { background: rgba(245, 158, 11, 0.2); color: var(--accent-yellow); }
-    
-    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 24px; }
-    .stat-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 16px; }
-    .stat-card .title { font-size: 13px; color: var(--text-muted); font-weight: 500; }
-    .stat-card .value { font-size: 26px; font-weight: 700; margin-top: 4px; color: var(--text-main); }
-    .stat-card .sub { font-size: 12px; color: var(--accent-green); margin-top: 4px; }
 
-    .main-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; }
-    @media (max-width: 900px) { .main-grid { grid-template-columns: 1fr; } }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif; }
+    body { background: var(--bg-body); color: var(--text); display: flex; height: 100vh; overflow: hidden; font-size: 13px; }
 
-    .card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 20px; margin-bottom: 20px; }
-    .card h2 { font-size: 18px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; }
+    /* Sidebar */
+    aside { width: 240px; background: var(--bg-sidebar); border-right: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; }
+    .brand { padding: 20px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+    .brand-logo { width: 28px; height: 28px; background: linear-gradient(135deg, #0284c7, #38bdf8); border-radius: 6px; display: grid; place-items: center; font-weight: 800; color: #fff; font-size: 14px; }
+    .brand-text h1 { font-size: 14px; font-weight: 700; color: #fff; letter-spacing: -0.2px; }
+    .brand-text p { font-size: 11px; color: var(--text-muted); }
     
-    .incident-item { border-left: 4px solid var(--accent-red); background: #0f172a; padding: 14px; border-radius: 4px; margin-bottom: 12px; }
-    .incident-item.p2 { border-left-color: var(--accent-yellow); }
-    .incident-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-    .incident-title { font-weight: 600; font-size: 15px; }
-    .incident-meta { font-size: 12px; color: var(--text-muted); margin-bottom: 6px; }
-    .code-box { background: #090d16; padding: 8px 12px; border-radius: 4px; font-size: 12px; font-family: monospace; color: #38bdf8; margin: 8px 0; overflow-x: auto; }
-    
-    .btn { cursor: pointer; border: none; padding: 8px 14px; border-radius: 4px; font-weight: 600; font-size: 13px; transition: 0.2s; }
-    .btn-danger { background: var(--accent-red); color: white; }
-    .btn-danger:hover { background: #dc2626; }
-    .btn-secondary { background: var(--border-color); color: var(--text-main); margin-left: 8px; }
-    .btn-secondary:hover { background: #475569; }
+    .nav-menu { padding: 16px 8px; flex: 1; display: flex; flex-direction: column; gap: 4px; }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 6px; color: var(--text-secondary); text-decoration: none; cursor: pointer; transition: 0.15s; font-weight: 500; }
+    .nav-item:hover, .nav-item.active { background: var(--bg-card); color: #fff; }
+    .nav-item.active { color: var(--blue); background: rgba(56, 189, 248, 0.08); font-weight: 600; }
+    .nav-badge { margin-left: auto; background: var(--red); color: #fff; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 99px; }
 
-    .endpoint-status { display: flex; align-items: center; justify-content: space-between; padding: 12px; background: #0f172a; border-radius: 6px; margin-bottom: 12px; }
-    .log-feed { max-height: 280px; overflow-y: auto; font-size: 12px; font-family: monospace; color: var(--text-muted); line-height: 1.8; }
-    .log-entry { border-bottom: 1px solid #1e293b; padding: 4px 0; }
-    .log-entry .timestamp { color: var(--accent-blue); }
+    .analyst-footer { padding: 14px 16px; border-top: 1px solid var(--border); background: rgba(0,0,0,0.15); display: flex; align-items: center; gap: 10px; }
+    .avatar { width: 32px; height: 32px; border-radius: 50%; background: #334155; display: grid; place-items: center; font-weight: 700; color: var(--blue); font-size: 12px; }
+    .analyst-info h4 { font-size: 12px; color: #fff; }
+    .analyst-info p { font-size: 10px; color: var(--text-muted); }
+
+    /* Main Container */
+    main { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: var(--bg-body); }
+    
+    /* Top Bar */
+    header { height: 56px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; background: var(--bg-sidebar); }
+    .header-left { display: flex; align-items: center; gap: 16px; }
+    .env-tag { font-size: 11px; background: var(--green-bg); color: var(--green); border: 1px solid rgba(16, 185, 129, 0.3); padding: 3px 8px; border-radius: 4px; font-weight: 600; }
+    .search-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; padding: 6px 12px; color: #fff; font-size: 12px; width: 280px; outline: none; }
+    .search-box:focus { border-color: var(--blue); }
+
+    /* Content Area */
+    .content-area { flex: 1; overflow-y: auto; padding: 20px 24px; display: flex; flex-direction: column; gap: 20px; }
+
+    /* Metric Cards Grid */
+    .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    .kpi-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; }
+    .kpi-title { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+    .kpi-value { font-size: 24px; font-weight: 800; color: #fff; letter-spacing: -0.5px; }
+    .kpi-sub { font-size: 11px; display: flex; align-items: center; gap: 4px; }
+    .kpi-sub.pos { color: var(--green); }
+    .kpi-sub.neutral { color: var(--blue); }
+
+    /* Workspace 2-Column Layout */
+    .workspace-grid { display: grid; grid-template-columns: 1.8fr 1.2fr; gap: 20px; align-items: start; }
+
+    /* Panel Card */
+    .panel { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; }
+    .panel-header { padding: 14px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+    .panel-header h3 { font-size: 13px; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 8px; }
+    
+    /* Filter Tabs */
+    .tab-pills { display: flex; gap: 6px; }
+    .tab-pill { background: transparent; border: 1px solid transparent; color: var(--text-muted); font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 4px; cursor: pointer; }
+    .tab-pill.active { background: #1e293b; color: #fff; border-color: var(--border-accent); }
+
+    /* Incident Queue Table */
+    .incident-table { width: 100%; border-collapse: collapse; text-align: left; }
+    .incident-table th { padding: 10px 14px; font-size: 11px; color: var(--text-muted); font-weight: 600; border-bottom: 1px solid var(--border); background: rgba(0,0,0,0.1); }
+    .incident-table td { padding: 12px 14px; border-bottom: 1px solid var(--border); font-size: 12px; color: var(--text-secondary); vertical-align: middle; }
+    .incident-row { cursor: pointer; transition: 0.1s; }
+    .incident-row:hover { background: var(--bg-card-hover); }
+    .incident-row.selected { background: rgba(56, 189, 248, 0.06); }
+    
+    .sev-pill { display: inline-block; padding: 2px 6px; border-radius: 3px; font-size: 10px; font-weight: 700; }
+    .sev-p1 { background: var(--red-bg); color: var(--red); border: 1px solid rgba(239, 68, 68, 0.3); }
+    .sev-p2 { background: var(--yellow-bg); color: var(--yellow); border: 1px solid rgba(245, 158, 11, 0.3); }
+    .sev-p3 { background: var(--blue-bg); color: var(--blue); border: 1px solid rgba(56, 189, 248, 0.3); }
+
+    .status-badge { display: inline-block; padding: 2px 8px; border-radius: 99px; font-size: 10px; font-weight: 600; }
+    .status-active { background: var(--red-bg); color: var(--red); }
+    .status-contained { background: var(--green-bg); color: var(--green); }
+    .status-closed { background: #1e293b; color: var(--text-muted); }
+
+    /* Detail Drawer Panel */
+    .drawer-body { padding: 18px; display: flex; flex-direction: column; gap: 14px; }
+    .detail-section { display: flex; flex-direction: column; gap: 4px; }
+    .detail-label { font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; }
+    .detail-value { font-size: 12px; color: #fff; }
+    
+    .code-block { background: #060911; border: 1px solid #1e293b; border-radius: 4px; padding: 10px 12px; font-family: "JetBrains Mono", Consolas, monospace; font-size: 11px; color: #38bdf8; word-break: break-all; }
+    .tree-box { background: #060911; border: 1px solid #1e293b; border-radius: 4px; padding: 10px 12px; font-family: monospace; font-size: 11px; line-height: 1.6; color: #cbd5e1; }
+
+    .action-button-row { display: flex; gap: 8px; margin-top: 8px; }
+    .btn { padding: 8px 14px; border-radius: 4px; font-size: 12px; font-weight: 600; cursor: pointer; border: none; transition: 0.15s; }
+    .btn-isolate { background: var(--red); color: #fff; }
+    .btn-isolate:hover { background: #dc2626; }
+    .btn-triage { background: #1e293b; color: #fff; border: 1px solid var(--border-accent); }
+    .btn-triage:hover { background: #334155; }
+
+    /* Live SOAR Execution Log */
+    .terminal-stream { background: #060911; border: 1px solid var(--border); border-radius: 6px; padding: 12px; height: 160px; overflow-y: auto; font-family: monospace; font-size: 11px; color: #94a3b8; line-height: 1.6; }
+    .term-line { display: flex; gap: 8px; }
+    .term-time { color: var(--blue); }
+    .term-alert { color: var(--red); font-weight: 700; }
+    .term-success { color: var(--green); }
   </style>
 </head>
 <body>
 
-  <header>
-    <div>
-      <h1 style="font-size: 22px; font-weight: 800; letter-spacing: -0.5px;">🛡️ Cloud SOC & SOAR Operations Console</h1>
-      <p style="color: var(--text-muted); font-size: 13px;">Analyst: Dil Mahmud Khan (EMJM CyberMACS) | Connected to LimaCharlie EDR & Tines SOAR</p>
-    </div>
-    <div>
-      <span class="badge badge-live">● System Live (Docker / Cloud API)</span>
-    </div>
-  </header>
-
-  <!-- Metric KPIs -->
-  <div class="stats-grid">
-    <div class="stat-card">
-      <div class="title">Mean Time to Acknowledge (MTTA)</div>
-      <div class="value">24.0s</div>
-      <div class="sub">↓ 97.6% from manual baseline</div>
-    </div>
-    <div class="stat-card">
-      <div class="title">Mean Time to Respond (MTTR)</div>
-      <div class="value">2.3m</div>
-      <div class="sub">↓ 92.5% faster containment</div>
-    </div>
-    <div class="stat-card">
-      <div class="title">SLA Compliance Rate</div>
-      <div class="value" style="color: var(--accent-green);">100%</div>
-      <div class="sub">5 / 5 Incidents resolved in SLA</div>
-    </div>
-    <div class="stat-card">
-      <div class="title">Threat Intel Enrichment</div>
-      <div class="value">VirusTotal v3</div>
-      <div class="sub">Automated API Hash Analysis</div>
-    </div>
-  </div>
-
-  <div class="main-grid">
-    <!-- Left Column: Active Incidents Queue -->
-    <div>
-      <div class="card">
-        <h2>
-          <span>🚨 High-Priority Incident Triage Queue</span>
-          <span style="font-size: 13px; color: var(--text-muted); font-weight: normal;">Live Webhook Ingestion</span>
-        </h2>
-
-        <!-- Incident 1: Certutil LOLBAS -->
-        <div class="incident-item p2">
-          <div class="incident-header">
-            <span class="incident-title">T1105 - LOLBAS Ingress Tool Transfer (certutil.exe)</span>
-            <span class="badge badge-high">P2 High</span>
-          </div>
-          <div class="incident-meta">
-            Host: <strong>WIN10-ENT-LAB</strong> (192.168.56.105) | User: <code>DESKTOP-TEST\DilMahmud</code> | MITRE: <code>T1105</code>
-          </div>
-          <div class="code-box">certutil.exe -urlcache -split -f https://secure.eicar.org/eicar.com payload_certutil.tmp</div>
-          <div style="font-size: 13px; margin: 6px 0;">
-            VirusTotal Score: <strong style="color: var(--accent-red);">58/72 Malicious</strong> (EICAR-Test-Signature)
-          </div>
-          <div style="margin-top: 10px;">
-            <button class="btn btn-danger" onclick="isolateHost('WIN10-ENT-LAB', 'INC-2026-001')">🔴 Isolate Endpoint</button>
-            <button class="btn btn-secondary" onclick="alert('Incident INC-2026-001 marked for deeper review.')">⚪ View Full Artifacts</button>
-          </div>
-        </div>
-
-        <!-- Incident 2: LSASS Memory Dump -->
-        <div class="incident-item">
-          <div class="incident-header">
-            <span class="incident-title">T1003.001 - Credential Dumping via Comsvcs.dll</span>
-            <span class="badge badge-critical">P1 Critical</span>
-          </div>
-          <div class="incident-meta">
-            Host: <strong>WIN10-ENT-LAB</strong> | Target: <code>lsass.exe (PID: 748)</code> | MITRE: <code>T1003.001</code>
-          </div>
-          <div class="code-box">rundll32.exe C:\Windows\System32\comsvcs.dll, MiniDump 748 lsass_simulated.dmp full</div>
-          <div style="font-size: 13px; margin: 6px 0;">
-            Telemetry: Direct memory read access handle opened against LSASS process.
-          </div>
-          <div style="margin-top: 10px;">
-            <button class="btn btn-danger" onclick="isolateHost('WIN10-ENT-LAB', 'INC-2026-002')">🔴 Isolate Endpoint</button>
-            <button class="btn btn-secondary" onclick="alert('Incident INC-2026-002 marked for deeper review.')">⚪ View Full Artifacts</button>
-          </div>
-        </div>
-
+  <!-- Sidebar -->
+  <aside>
+    <div class="brand">
+      <div class="brand-logo">LC</div>
+      <div class="brand-text">
+        <h1>Cloud SOC Console</h1>
+        <p>EDR & SOAR Operations</p>
       </div>
     </div>
 
-    <!-- Right Column: Sensor Status & Real-time SOAR Log -->
-    <div>
-      <div class="card">
-        <h2>Endpoint Status</h2>
-        <div class="endpoint-status">
-          <div>
-            <div style="font-weight: 600;">WIN10-ENT-LAB</div>
-            <div style="font-size: 12px; color: var(--text-muted);">IP: 192.168.56.105</div>
-          </div>
-          <span id="hostStatusBadge" class="badge badge-live">Active</span>
+    <nav class="nav-menu">
+      <a class="nav-item active" onclick="switchView('incidents')">
+        <span>Incident Queue</span>
+        <span class="nav-badge" id="openCount">4</span>
+      </a>
+      <a class="nav-item" onclick="switchView('fleet')">
+        <span>Sensor Fleet</span>
+      </a>
+      <a class="nav-item" onclick="switchView('soar')">
+        <span>SOAR Playbooks</span>
+      </a>
+      <a class="nav-item" onclick="switchView('mitre')">
+        <span>MITRE Navigator</span>
+      </a>
+    </nav>
+
+    <div class="analyst-footer">
+      <div class="avatar">DK</div>
+      <div class="analyst-info">
+        <h4>Dil Mahmud Khan</h4>
+        <p>Lead Blue Team Analyst</p>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main View -->
+  <main>
+    <header>
+      <div class="header-left">
+        <span class="env-tag">● PRODUCTION CLOUD TELEMETRY</span>
+        <span style="font-size: 12px; color: var(--text-muted);">Organization: <strong>dil-soc-lab</strong> | LimaCharlie EDR Engine v4.3</span>
+      </div>
+      <div>
+        <input type="text" class="search-box" placeholder="Search host, hash, IP, or technique..." onkeyup="filterIncidents(this.value)">
+      </div>
+    </header>
+
+    <div class="content-area">
+      <!-- KPI Row -->
+      <div class="kpi-row">
+        <div class="kpi-card">
+          <span class="kpi-title">Mean Time to Acknowledge</span>
+          <span class="kpi-value">24.0s</span>
+          <span class="kpi-sub pos">↓ 97.6% via Tines Webhook</span>
         </div>
-        <p style="font-size: 12px; color: var(--text-muted);" id="isolationStatusText">
-          Endpoint is actively sending process and socket telemetry to LimaCharlie Cloud.
-        </p>
+        <div class="kpi-card">
+          <span class="kpi-title">Mean Time to Respond</span>
+          <span class="kpi-value">2.3m</span>
+          <span class="kpi-sub pos">↓ 92.5% Automated Containment</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-title">SLA Compliance Rate</span>
+          <span class="kpi-value">100%</span>
+          <span class="kpi-sub pos">7 / 7 Incidents in SLA Target</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-title">Threat Intel Ingestion</span>
+          <span class="kpi-value">VirusTotal v3</span>
+          <span class="kpi-sub neutral">● Automated Hash Enrichment</span>
+        </div>
       </div>
 
-      <div class="card">
-        <h2>SOAR Pipeline Live Log</h2>
-        <div class="log-feed" id="logFeed">
-          <div class="log-entry"><span class="timestamp">[15:42:10]</span> EDR Rule matched: T1105 Ingress Tool Transfer</div>
-          <div class="log-entry"><span class="timestamp">[15:42:11]</span> Webhook sent to Tines: 192.168.56.105</div>
-          <div class="log-entry"><span class="timestamp">[15:42:12]</span> VT API query hash: 275a021b... Score: 58/72</div>
-          <div class="log-entry"><span class="timestamp">[15:42:14]</span> Slack card dispatched to #soc-alerts</div>
-          <div class="log-entry"><span class="timestamp">[15:42:24]</span> Awaiting analyst containment decision...</div>
+      <!-- Main Workspace: Queue & Detail Drawer -->
+      <div class="workspace-grid">
+        <!-- Incident Queue -->
+        <div class="panel">
+          <div class="panel-header">
+            <h3>Active Incident Stream</h3>
+            <div class="tab-pills">
+              <button class="tab-pill active" onclick="filterCategory('ALL')">ALL (7)</button>
+              <button class="tab-pill" onclick="filterCategory('P1')">P1 CRITICAL</button>
+              <button class="tab-pill" onclick="filterCategory('P2')">P2 HIGH</button>
+              <button class="tab-pill" onclick="filterCategory('P3')">P3 MEDIUM</button>
+            </div>
+          </div>
+
+          <table class="incident-table" id="incidentTable">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>SEV</th>
+                <th>TECHNIQUE & ATTACK</th>
+                <th>TARGET ENDPOINT</th>
+                <th>VT SCORE</th>
+                <th>STATUS</th>
+              </tr>
+            </thead>
+            <tbody id="incidentTbody">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Detail Drawer -->
+        <div class="panel" id="detailPanel">
+          <div class="panel-header">
+            <h3>Incident Investigation Detail</h3>
+            <span id="detailSevBadge" class="sev-pill sev-p1">P1 CRITICAL</span>
+          </div>
+
+          <div class="drawer-body">
+            <div class="detail-section">
+              <span class="detail-label">Incident Name</span>
+              <span class="detail-value" id="detailName" style="font-weight: 700; font-size: 14px;">T1003.001 - OS Credential Dumping (LSASS)</span>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+              <div class="detail-section">
+                <span class="detail-label">Affected Endpoint</span>
+                <span class="detail-value" id="detailHost">WIN10-ENT-LAB (192.168.56.105)</span>
+              </div>
+              <div class="detail-section">
+                <span class="detail-label">Logged User</span>
+                <span class="detail-value" id="detailUser">DESKTOP-TEST\DilMahmud</span>
+              </div>
+            </div>
+
+            <div class="detail-section">
+              <span class="detail-label">Executed Command Line</span>
+              <div class="code-block" id="detailCmd">rundll32.exe C:\Windows\System32\comsvcs.dll, MiniDump 748 lsass_simulated.dmp full</div>
+            </div>
+
+            <div class="detail-section">
+              <span class="detail-label">Process Lineage & Heritage</span>
+              <div class="tree-box" id="detailTree">
+                explorer.exe (PID: 2840)<br>
+                &nbsp;&nbsp;└─► powershell.exe (PID: 3912)<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─► rundll32.exe (PID: 5840) [Target: lsass.exe PID: 748]
+              </div>
+            </div>
+
+            <div class="detail-section">
+              <span class="detail-label">VirusTotal Threat Reputation</span>
+              <div style="display: flex; align-items: center; justify-content: space-between; background: #060911; padding: 8px 12px; border-radius: 4px; border: 1px solid #1e293b;">
+                <span id="detailVtScore" style="color: var(--red); font-weight: 700;">Direct Memory Handle (LSASS Exfiltration)</span>
+                <span style="font-size: 11px; color: var(--text-muted);">Method: Native DLL Injection</span>
+              </div>
+            </div>
+
+            <div class="action-button-row">
+              <button class="btn btn-isolate" id="btnIsolate" onclick="executeHostIsolation()">🔴 Isolate Endpoint via EDR API</button>
+              <button class="btn btn-triage" onclick="runLiveTriage()">🔬 Run Live Forensics (RFC 3227)</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Real-time SOAR Log Terminal -->
+      <div class="panel">
+        <div class="panel-header">
+          <h3>⚡ SOAR Webhook & Containment Pipeline Stream</h3>
+          <span style="font-size: 11px; color: var(--text-muted);">Tines Cloud Engine Sync: Connected</span>
+        </div>
+        <div class="terminal-stream" id="termStream">
+          <div class="term-line"><span class="term-time">[15:42:10 UTC]</span> <span>LimaCharlie D&R Rule matched: T1105 Ingress Tool Transfer (certutil.exe)</span></div>
+          <div class="term-line"><span class="term-time">[15:42:11 UTC]</span> <span>Webhook POST sent to Tines Community Story. Payload size: 1,482 bytes.</span></div>
+          <div class="term-line"><span class="term-time">[15:42:12 UTC]</span> <span>VirusTotal API v3 query for hash: 275a021b... -> Detections: 58/72 Malicious.</span></div>
+          <div class="term-line"><span class="term-time">[15:42:13 UTC]</span> <span>Interactive Slack Card posted to channel #soc-alerts with [Isolate] action button.</span></div>
+          <div class="term-line"><span class="term-time">[15:42:24 UTC]</span> <span class="term-alert">ANALYST APPROVED CONTAINMENT: Host WIN10-ENT-LAB isolated via LimaCharlie API.</span></div>
+          <div class="term-line"><span class="term-time">[15:42:25 UTC]</span> <span class="term-success">[✓] Endpoint network isolation verified. Inbound/Outbound traffic dropped. Management channel alive.</span></div>
         </div>
       </div>
     </div>
-  </div>
+  </main>
 
   <script>
-    function isolateHost(hostname, incidentId) {
-      const badge = document.getElementById('hostStatusBadge');
-      const text = document.getElementById('isolationStatusText');
-      const feed = document.getElementById('logFeed');
+    const incidents = [
+      {
+        id: "INC-2026-001",
+        sev: "P2",
+        name: "T1105 - Ingress Tool Transfer (certutil.exe)",
+        host: "WIN10-ENT-LAB (192.168.56.105)",
+        user: "DESKTOP-TEST\\DilMahmud",
+        cmd: "certutil.exe -urlcache -split -f https://secure.eicar.org/eicar.com payload_certutil.tmp",
+        tree: "explorer.exe (PID: 2840)\n  └─► cmd.exe (PID: 3812)\n        └─► certutil.exe (PID: 4928) -> Outbound: 89.238.73.97:443",
+        vt: "58 / 72 Security Engines (Malicious)",
+        status: "CONTAINED",
+        mitre: "T1105"
+      },
+      {
+        id: "INC-2026-002",
+        sev: "P1",
+        name: "T1003.001 - OS Credential Dumping (LSASS comsvcs)",
+        host: "WIN10-ENT-LAB (192.168.56.105)",
+        user: "DESKTOP-TEST\\DilMahmud",
+        cmd: "rundll32.exe C:\\Windows\\System32\\comsvcs.dll, MiniDump 748 lsass_simulated.dmp full",
+        tree: "powershell.exe (PID: 3912)\n  └─► rundll32.exe (PID: 5840)\n        └─► OpenProcess(lsass.exe PID: 748, PROCESS_VM_READ)",
+        vt: "Native LOLBAS Memory Exploit",
+        status: "ACTIVE",
+        mitre: "T1003.001"
+      },
+      {
+        id: "INC-2026-003",
+        sev: "P3",
+        name: "T1059.001 - Obfuscated PowerShell Execution (-enc)",
+        host: "WIN10-ENT-LAB (192.168.56.105)",
+        user: "DESKTOP-TEST\\DilMahmud",
+        cmd: "powershell.exe -NoProfile -ExecutionPolicy Bypass -EncodedCommand VwByAGkAdABlAC0ASABvAHMAdAAgACc...",
+        tree: "cmd.exe (PID: 3812)\n  └─► powershell.exe (PID: 6112) [-enc decoded: Simulated Malicious Script]",
+        vt: "Clean (Base64 Benign String)",
+        status: "CLOSED",
+        mitre: "T1059.001"
+      },
+      {
+        id: "INC-2026-004",
+        sev: "P2",
+        name: "T1566.001 - Spearphishing Attachment (Invoice.pdf.exe)",
+        host: "WORKSTATION-FINANCE (192.168.56.110)",
+        user: "CORP\\accounting01",
+        cmd: "outlook.exe -> C:\\Users\\accounting01\\AppData\\Local\\Temp\\Invoice_98214.pdf.exe",
+        tree: "outlook.exe (PID: 4120)\n  └─► Invoice_98214.pdf.exe (PID: 7104) [Double Extension Executable]",
+        vt: "62 / 72 Security Engines (Trojan.Downloader)",
+        status: "ACTIVE",
+        mitre: "T1566.001"
+      },
+      {
+        id: "INC-2026-005",
+        sev: "P2",
+        name: "T1071.001 - Suspicious C2 Beaconing to External IP",
+        host: "WIN10-ENT-LAB (192.168.56.105)",
+        user: "SYSTEM (Network Service)",
+        cmd: "svchost.exe (PID: 1044) -> Outbound TCP 198.51.100.42:8080 (TLS SNI: none)",
+        tree: "services.exe\n  └─► svchost.exe -> Unknown external destination without TLS SNI certificate",
+        vt: "AbuseIPDB 95% Confidence (Cobalt Strike)",
+        status: "ACTIVE",
+        mitre: "T1071.001"
+      },
+      {
+        id: "INC-2026-006",
+        sev: "P2",
+        name: "T1547.001 - Persistence Registry Run Key Modified",
+        host: "WIN10-ENT-LAB (192.168.56.105)",
+        user: "DESKTOP-TEST\\DilMahmud",
+        cmd: "reg.exe add HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run /v SystemUpdate /t REG_SZ /d C:\\Temp\\stage.exe",
+        tree: "cmd.exe (PID: 3812)\n  └─► reg.exe (PID: 8192) [Added startup persistence entry]",
+        vt: "Suspicious Staged Binary",
+        status: "CONTAINED",
+        mitre: "T1547.001"
+      },
+      {
+        id: "INC-2026-007",
+        sev: "P3",
+        name: "T1046 - Internal Network Port Discovery Scan",
+        host: "UBUNTU-WAZUH-GW (192.168.56.1)",
+        user: "admin",
+        cmd: "nmap -sS -p 22,80,443,3389 192.168.56.0/24",
+        tree: "bash (PID: 1420)\n  └─► nmap (PID: 2901) [SYN Scan on local subnet]",
+        vt: "Whitelisted Internal Scanner",
+        status: "CLOSED",
+        mitre: "T1046"
+      }
+    ];
 
-      badge.className = 'badge badge-isolated';
-      badge.innerText = 'ISOLATED';
-      text.innerHTML = '<span style="color: #ef4444; font-weight: bold;">[ISOLATED]</span> Host network traffic dropped via LimaCharlie API. C2 blocked. EDR agent alive.';
+    let currentIncident = incidents[1]; // default to P1 LSASS
 
-      const time = new Date().toLocaleTimeString();
-      const newLog = document.createElement('div');
-      newLog.className = 'log-entry';
-      newLog.innerHTML = `<span class="timestamp">[${time}]</span> <strong style="color: #ef4444;">CONTAINMENT EXECUTED:</strong> LimaCharlie API isolated ${hostname} (${incidentId})`;
-      feed.prepend(newLog);
+    function renderTable(list) {
+      const tbody = document.getElementById("incidentTbody");
+      tbody.innerHTML = "";
+      list.forEach(item => {
+        const tr = document.createElement("tr");
+        tr.className = `incident-row ${item.id === currentIncident.id ? 'selected' : ''}`;
+        tr.onclick = () => selectIncident(item);
 
-      alert(`✅ Containment Executed!\n\nHost: ${hostname}\nAction: Network Isolated via LimaCharlie API\nResult: Outbound/Inbound traffic blocked. Forensic channel active.`);
+        const sevClass = item.sev === 'P1' ? 'sev-p1' : (item.sev === 'P2' ? 'sev-p2' : 'sev-p3');
+        const statusClass = item.status === 'ACTIVE' ? 'status-active' : (item.status === 'CONTAINED' ? 'status-contained' : 'status-closed');
+
+        tr.innerHTML = `
+          <td><strong>${item.id}</strong></td>
+          <td><span class="sev-pill ${sevClass}">${item.sev}</span></td>
+          <td><strong style="color: #fff;">${item.name}</strong></td>
+          <td>${item.host}</td>
+          <td><span style="color: ${item.vt.includes('Malicious') || item.vt.includes('Exploit') ? 'var(--red)' : 'var(--text-secondary)'}; font-weight: 600;">${item.vt}</span></td>
+          <td><span class="status-badge ${statusClass}">${item.status}</span></td>
+        `;
+        tbody.appendChild(tr);
+      });
     }
-  </script>
 
+    function selectIncident(item) {
+      currentIncident = item;
+      renderTable(incidents);
+
+      document.getElementById("detailName").innerText = item.name;
+      document.getElementById("detailHost").innerText = item.host;
+      document.getElementById("detailUser").innerText = item.user;
+      document.getElementById("detailCmd").innerText = item.cmd;
+      document.getElementById("detailTree").innerHTML = item.tree.replace(/\n/g, '<br>');
+      document.getElementById("detailVtScore").innerText = item.vt;
+
+      const badge = document.getElementById("detailSevBadge");
+      badge.className = `sev-pill ${item.sev === 'P1' ? 'sev-p1' : (item.sev === 'P2' ? 'sev-p2' : 'sev-p3')}`;
+      badge.innerText = `${item.sev} ${item.sev === 'P1' ? 'CRITICAL' : (item.sev === 'P2' ? 'HIGH' : 'MEDIUM')}`;
+
+      const btn = document.getElementById("btnIsolate");
+      if (item.status === 'CONTAINED') {
+        btn.innerText = "✓ Endpoint Already Network Isolated";
+        btn.style.background = "#1e293b";
+      } else {
+        btn.innerText = "🔴 Isolate Endpoint via EDR API";
+        btn.style.background = "var(--red)";
+      }
+    }
+
+    function executeHostIsolation() {
+      currentIncident.status = "CONTAINED";
+      selectIncident(currentIncident);
+
+      const stream = document.getElementById("termStream");
+      const time = new Date().toISOString().substring(11, 19);
+      const line = document.createElement("div");
+      line.className = "term-line";
+      line.innerHTML = `<span class="term-time">[${time} UTC]</span> <span class="term-alert">API CALL EXECUTED: POST /v1/sensor/${currentIncident.host}/isolation -> SUCCESS</span>`;
+      stream.prepend(line);
+
+      alert(`✅ Containment Executed via Cloud API!\n\nTarget Host: ${currentIncident.host}\nAction: Host Isolated from local & public networks.\nSensor State: Isolated (C2 Severed, Forensic Channel Active).`);
+    }
+
+    function runLiveTriage() {
+      const stream = document.getElementById("termStream");
+      const time = new Date().toISOString().substring(11, 19);
+      const line = document.createElement("div");
+      line.className = "term-line";
+      line.innerHTML = `<span class="term-time">[${time} UTC]</span> <span class="term-success">[✓] Live Triage Script (RFC 3227) executed on ${currentIncident.host}. Sockets, processes & persistence dumped to C:\\LabAttacks\\Triage.</span>`;
+      stream.prepend(line);
+
+      alert(`🔬 Live Forensic Triage Initiated!\n\nExecuted: collect_triage.ps1 on ${currentIncident.host}\nAcquired: Active network sockets, process tree, user sessions, and registry persistence.`);
+    }
+
+    function filterCategory(cat) {
+      document.querySelectorAll(".tab-pill").forEach(p => p.classList.remove("active"));
+      event.target.classList.add("active");
+      if (cat === "ALL") {
+        renderTable(incidents);
+      } else {
+        renderTable(incidents.filter(i => i.sev === cat));
+      }
+    }
+
+    function filterIncidents(query) {
+      const q = query.toLowerCase();
+      const filtered = incidents.filter(i => 
+        i.name.toLowerCase().includes(q) || 
+        i.host.toLowerCase().includes(q) || 
+        i.cmd.toLowerCase().includes(q) || 
+        i.id.toLowerCase().includes(q)
+      );
+      renderTable(filtered);
+    }
+
+    function switchView(view) {
+      if (view === 'fleet') {
+        alert("Sensor Fleet View:\n\n• WIN10-ENT-LAB (Windows 10 Enterprise) - Sensor Active\n• WORKSTATION-FINANCE (Windows 11 Pro) - Sensor Active\n• UBUNTU-WAZUH-GW (Ubuntu 22.04 LTS) - Sensor Active");
+      } else if (view === 'soar') {
+        alert("SOAR Automation Pipeline:\n\n• Story: LimaCharlie EDR to Slack & VirusTotal\n• Nodes: 4 Active\n• Webhook Latency: 0.8s\n• Last Run: 2 minutes ago (Success)");
+      } else if (view === 'mitre') {
+        window.open('https://mitre-attack.github.io/attack-navigator/', '_blank');
+      }
+    }
+
+    // Initial render
+    renderTable(incidents);
+    selectIncident(currentIncident);
+  </script>
 </body>
 </html>
