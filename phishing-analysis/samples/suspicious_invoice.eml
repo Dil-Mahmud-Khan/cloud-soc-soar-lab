@@ -1,0 +1,36 @@
+From: "Microsoft Billing Support" <billing-notice@micros0ft-security-update.com>
+To: "Dil Mahmud Khan" <dilmahmudkhan956@gmail.com>
+Subject: URGENT: Your Cloud Subscription Has Expired - Immediate Action Required
+Date: Tue, 22 Sep 2026 14:15:00 +0000
+Message-ID: <20260922141500.12847.qmail@attacker-c2.net>
+Return-Path: <bounce@attacker-c2.net>
+Reply-To: <collector@external-hacker-mail.xyz>
+Authentication-Results: mx.google.com;
+       spf=fail (google.com: domain of bounce@attacker-c2.net does not designate 198.51.100.42 as permitted sender) smtp.mailfrom=bounce@attacker-c2.net;
+       dkim=fail header.i=@micros0ft-security-update.com;
+       dmarc=fail (p=REJECT sp=REJECT dis=NONE) header.from=micros0ft-security-update.com
+Received: from mail.attacker-c2.net (198.51.100.42) by mx.google.com with ESMTPS id abc123xyz
+Content-Type: multipart/mixed; boundary="----=_Part_001_12345678"
+
+------=_Part_001_12345678
+Content-Type: text/plain; charset="UTF-8"
+
+Dear Customer,
+
+Your enterprise cloud service invoice #INV-98214 is past due. To prevent service suspension, verify your account details immediately:
+
+hxxps://login.micros0ft-security-update.com/auth/verify?id=98214
+
+Please review the attached invoice breakdown.
+
+Regards,
+Billing Security Team
+
+------=_Part_001_12345678
+Content-Type: application/octet-stream; name="Invoice_98214.pdf.exe"
+Content-Disposition: attachment; filename="Invoice_98214.pdf.exe"
+Content-Transfer-Encoding: base64
+
+VEhJUyBJUyBBIFNJTVVMQVRFRCBCRU5JR04gUEhJU0hJTkcgQVRUQUNITUVOVCBGSUxFIEZPUiBM
+QUIgVEVTVElORy4=
+------=_Part_001_12345678--

@@ -1,0 +1,80 @@
+name: Validate Detections, Playbooks & Tools
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyyaml requests
+
+      - name: Lint and Validate YAML Rules (Sigma, LimaCharlie, Suppression)
+        run: |
+          python -c "
+          import os, glob, yaml
+          files = (glob.glob('edr-rules/*.yaml') + 
+                   glob.glob('sigma/*.yml') + 
+                   glob.glob('scenarios/**/detection_rule.yaml', recursive=True) +
+                   glob.glob('tuning-and-suppression/*.yaml'))
+          for f in files:
+              with open(f, 'r') as fp:
+                  yaml.safe_load(fp)
+              print(f'[✓] Validated YAML syntax for: {f}')
+          "
+
+      - name: Validate JSON Playbooks and Feeds
+        run: |
+          python -c "
+          import json, glob
+          for jf in ['soar-playbooks/tines_soar_story.json', 'soc-metrics/incident_log.json', 'threat-intelligence/feeds/sample_c2_feed.json', 'case-management/templates/case_template_malware.json', 'docs/mitre-attack-coverage.json']:
+              with open(jf, 'r') as fp:
+                  json.load(fp)
+              print(f'[✓] Validated JSON syntax for: {jf}')
+          "
+
+      - name: Test Phishing Email Analyzer Tool
+        run: |
+          python phishing-analysis/phishing_analyzer.py phishing-analysis/samples/suspicious_invoice.eml
+
+      - name: Test SOC Metrics Calculator Tool
+        run: |
+          cd soc-metrics && python calculate_metrics.py && cd ..
+
+      - name: Test Threat Intelligence Ingestion Tool
+        run: |
+          cd threat-intelligence && python ingest_ioc_feed.py feeds/sample_c2_feed.json && cd ..
+
+      - name: Test Purple Team Verification Scorecard
+        run: |
+          python purple-team/purple_team_runner.py
+
+      - name: Test Case Management Dispatch Tool
+        run: |
+          cd case-management && python create_case.py && cd ..
+
+      - name: Test Malware Sandbox Detonation Tool
+        run: |
+          python malware-sandbox/detonate_sample.py
+
+      - name: Test Network Forensics Session Analyzer
+        run: |
+          cd network-forensics && python analyze_network.py && cd ..
+
+      - name: Smoke Test Python SOAR Pipeline
+        run: |
+          echo "no" | python soar-playbooks/soar_pipeline.py

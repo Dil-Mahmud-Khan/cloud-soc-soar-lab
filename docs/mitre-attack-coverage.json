@@ -1,0 +1,61 @@
+{
+  "name": "Cloud SOC & SOAR Lab - MITRE ATT&CK Coverage Matrix",
+  "versions": {
+    "attack": "14",
+    "navigator": "4.9.1",
+    "layer": "4.5"
+  },
+  "domain": "enterprise-attack",
+  "description": "Technique coverage and emulation matrix for the Cloud EDR & SOAR Incident Response Pipeline by Dil Mahmud Khan.",
+  "techniques": [
+    {
+      "techniqueID": "T1105",
+      "score": 100,
+      "comment": "Tested: Ingress tool transfer via certutil.exe LOLBAS. Detected via LimaCharlie EDR & Sigma rule, auto-isolated via Tines SOAR.",
+      "enabled": true
+    },
+    {
+      "techniqueID": "T1003.001",
+      "score": 100,
+      "comment": "Tested: LSASS memory dump access via comsvcs.dll and rundll32.exe. Detected via EDR memory handle rule.",
+      "enabled": true
+    },
+    {
+      "techniqueID": "T1059.001",
+      "score": 80,
+      "comment": "Tested: Obfuscated PowerShell execution (-EncodedCommand / Bypass flags). Detected via CLI parameter matching.",
+      "enabled": true
+    },
+    {
+      "techniqueID": "T1218",
+      "score": 90,
+      "comment": "Tested: System Binary Proxy Execution using signed Windows binaries (certutil, rundll32).",
+      "enabled": true
+    },
+    {
+      "techniqueID": "T1566.001",
+      "score": 85,
+      "comment": "Tested: Phishing with malicious attachment triage and header authentication (SPF/DKIM/DMARC) inspection.",
+      "enabled": true
+    }
+  ],
+  "gradient": {
+    "colors": [
+      "#ff6666",
+      "#ffe766",
+      "#8ec843"
+    ],
+    "minValue": 0,
+    "maxValue": 100
+  },
+  "legendItems": [
+    {
+      "label": "100%: Emulated, Detected & Automated Response via SOAR",
+      "color": "#8ec843"
+    },
+    {
+      "label": "80-90%: Emulated & Detected with Incident Triage Playbook",
+      "color": "#ffe766"
+    }
+  ]
+}

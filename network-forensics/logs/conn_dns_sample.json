@@ -1,0 +1,30 @@
+[
+  {
+    "timestamp": "2026-09-22T15:42:10Z",
+    "src_ip": "192.168.56.105",
+    "src_port": 49821,
+    "dst_ip": "89.238.73.97",
+    "dst_port": 443,
+    "proto": "tcp",
+    "service": "ssl",
+    "dns_query": "secure.eicar.org",
+    "bytes_sent": 512,
+    "bytes_recv": 4096,
+    "tls_sni": "secure.eicar.org",
+    "user_agent": "Microsoft-CryptoAPI/10.0 (certutil)"
+  },
+  {
+    "timestamp": "2026-09-22T15:42:15Z",
+    "src_ip": "192.168.56.105",
+    "src_port": 50112,
+    "dst_ip": "198.51.100.42",
+    "dst_port": 8080,
+    "proto": "tcp",
+    "service": "http",
+    "dns_query": "mail.attacker-c2.net",
+    "bytes_sent": 128,
+    "bytes_recv": 128,
+    "tls_sni": "none",
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0) PowerShell/5.1"
+  }
+]
