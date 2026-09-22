@@ -4,6 +4,7 @@ An automated detection and response project connecting LimaCharlie EDR, Tines SO
 
 * **Author:** Dil Mahmud Khan (Cybersecurity Master's Student, Erasmus Mundus CyberMACS)
 * **Target Role:** SOC Analyst Level 1 / Blue Team Intern
+* **Live SecOps Console:** [Interactive Dashboard Demo](https://dil-mahmud-khan.github.io/cloud-soc-soar-lab/dashboard/)
 * **GitHub Actions:** [![Validate Detections, Playbooks & Tools](https://github.com/Dil-Mahmud-Khan/cloud-soc-soar-lab/actions/workflows/validate-rules.yml/badge.svg)](https://github.com/Dil-Mahmud-Khan/cloud-soc-soar-lab/actions/workflows/validate-rules.yml)
 
 ---
@@ -119,8 +120,8 @@ To make this project reflect actual daily enterprise SOC work, I built ten pract
 9. **Threat Intelligence Feed Ingest ([threat-intelligence/](threat-intelligence/)):**  
    Created a Python normalizer (`ingest_ioc_feed.py`) converting external C2 IP and hash feeds into normalized JSON lookup lists for real-time EDR correlation.
 
-10. **Interactive SOC Dashboard ([dashboard/index.html](dashboard/index.html)):**  
-    Built a standalone HTML console you can open in any browser to inspect active incidents, view live metrics, and test simulated endpoint isolation.
+10. **Interactive SOC Dashboard ([Live Console Demo](https://dil-mahmud-khan.github.io/cloud-soc-soar-lab/dashboard/) | [dashboard/index.html](dashboard/index.html)):**  
+    Built a standalone enterprise SecOps console featuring a 7-incident triage queue, MITRE ATT&CK mapping, process lineage inspection, VirusTotal enrichment, and real-time host containment actions.
 
 ---
 
