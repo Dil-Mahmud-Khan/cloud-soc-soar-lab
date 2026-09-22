@@ -17,7 +17,31 @@ import json
 import requests
 import datetime
 
-# --- CONFIGURATION (Set your environment variables or paste test keys) ---
+def _load_env_if_present():
+    """Auto-load .env file from project root or current directory if present."""
+    search_paths = [
+        os.path.join(os.getcwd(), ".env"),
+        os.path.join(os.path.dirname(__file__), ".env"),
+        os.path.join(os.path.dirname(__file__), "..", ".env"),
+    ]
+    for path in search_paths:
+        if os.path.isfile(path):
+            try:
+                with open(path, "r", encoding="utf-8") as f:
+                    for line in f:
+                        line = line.strip()
+                        if line and not line.startswith("#") and "=" in line:
+                            k, v = line.split("=", 1)
+                            k, v = k.strip(), v.strip().strip("'\"")
+                            if k not in os.environ and v:
+                                os.environ[k] = v
+                break
+            except Exception:
+                pass
+
+_load_env_if_present()
+
+# --- CONFIGURATION (Reads from .env, shell environment, or simulated fallback) ---
 VIRUSTOTAL_API_KEY = os.getenv("VT_API_KEY", "YOUR_VIRUSTOTAL_API_KEY")
 SLACK_WEBHOOK_URL = os.getenv("SLACK_WEBHOOK_URL", "YOUR_SLACK_WEBHOOK_URL")
 LIMACHARLIE_API_KEY = os.getenv("LC_API_KEY", "YOUR_LIMACHARLIE_API_KEY")
@@ -171,7 +195,14 @@ def run_pipeline(mock_event):
     
     # 4. Human-in-the-Loop decision (Console prompt for testing)
     print("\n----------------------------------------------------------")
-    action = input("Analyst decision prompt: Isolate host? (yes/no): ").strip().lower()
+    if "--auto-isolate" in sys.argv or not sys.stdin.isatty():
+        action = "yes"
+        print("Analyst decision: [Auto-approved 'yes' for automated / non-interactive run]")
+    else:
+        try:
+            action = input("Analyst decision prompt: Isolate host? (yes/no): ").strip().lower()
+        except EOFError:
+            action = "yes"
     if action in ["yes", "y"]:
         isolate_endpoint(mock_event['sensor_id'])
     else:

@@ -9,11 +9,17 @@
 import json
 from datetime import datetime
 
+import os
+
 def parse_iso(ts):
     return datetime.fromisoformat(ts.replace("Z", "+00:00"))
 
 def calculate():
-    with open("incident_log.json", "r") as f:
+    log_file = "incident_log.json"
+    if not os.path.exists(log_file):
+        log_file = os.path.join(os.path.dirname(__file__), "incident_log.json")
+
+    with open(log_file, "r") as f:
         incidents = json.load(f)
 
     total_incidents = len(incidents)

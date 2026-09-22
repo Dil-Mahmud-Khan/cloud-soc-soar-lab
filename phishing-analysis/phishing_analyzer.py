@@ -22,8 +22,12 @@ def defang_url(url):
 
 def analyze_eml(file_path):
     if not os.path.exists(file_path):
-        print(f"[!] Error: File '{file_path}' not found.")
-        return
+        candidate = os.path.join(os.path.dirname(__file__), file_path)
+        if os.path.exists(candidate):
+            file_path = candidate
+        else:
+            print(f"[!] Error: File '{file_path}' not found.")
+            return
 
     print("==========================================================")
     print("  📧 Enterprise Phishing Email Triage Report")

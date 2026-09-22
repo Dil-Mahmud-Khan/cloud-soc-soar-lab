@@ -49,15 +49,15 @@ jobs:
 
       - name: Test Phishing Email Analyzer Tool
         run: |
-          python phishing-analysis/phishing_analyzer.py phishing-analysis/samples/suspicious_invoice.eml
+          python phishing-analysis/phishing_analyzer.py
 
       - name: Test SOC Metrics Calculator Tool
         run: |
-          cd soc-metrics && python calculate_metrics.py && cd ..
+          python soc-metrics/calculate_metrics.py
 
       - name: Test Threat Intelligence Ingestion Tool
         run: |
-          cd threat-intelligence && python ingest_ioc_feed.py feeds/sample_c2_feed.json && cd ..
+          python threat-intelligence/ingest_ioc_feed.py
 
       - name: Test Purple Team Verification Scorecard
         run: |
@@ -65,7 +65,7 @@ jobs:
 
       - name: Test Case Management Dispatch Tool
         run: |
-          cd case-management && python create_case.py && cd ..
+          python case-management/create_case.py
 
       - name: Test Malware Sandbox Detonation Tool
         run: |
@@ -73,8 +73,8 @@ jobs:
 
       - name: Test Network Forensics Session Analyzer
         run: |
-          cd network-forensics && python analyze_network.py && cd ..
+          python network-forensics/analyze_network.py
 
       - name: Smoke Test Python SOAR Pipeline
         run: |
-          echo "no" | python soar-playbooks/soar_pipeline.py
+          python soar-playbooks/soar_pipeline.py --auto-isolate

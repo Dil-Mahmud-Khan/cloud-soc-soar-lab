@@ -11,8 +11,12 @@ import os
 
 def analyze(log_file="logs/conn_dns_sample.json"):
     if not os.path.exists(log_file):
-        print(f"[!] File '{log_file}' not found.")
-        return
+        candidate = os.path.join(os.path.dirname(__file__), log_file)
+        if os.path.exists(candidate):
+            log_file = candidate
+        else:
+            print(f"[!] File '{log_file}' not found.")
+            return
 
     with open(log_file, "r") as f:
         events = json.load(f)

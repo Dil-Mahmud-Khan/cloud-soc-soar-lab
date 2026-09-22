@@ -49,7 +49,9 @@ def generate_case(incident):
     print(f"Observables:   {len(case_payload['observables'])} IOCs tagged for threat enrichment")
     print(f"Workflow Tasks:{len(case_payload['tasks'])} standard response tasks generated")
 
-    output_path = "case_management_payload.json"
+    import os
+    output_dir = os.path.dirname(__file__) if os.path.dirname(__file__) else "."
+    output_path = os.path.join(output_dir, "case_management_payload.json")
     with open(output_path, "w") as f:
         json.dump(case_payload, f, indent=2)
 

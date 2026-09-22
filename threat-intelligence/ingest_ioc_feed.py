@@ -20,8 +20,12 @@ def is_valid_sha256(h):
 
 def process_feed(feed_file):
     if not os.path.exists(feed_file):
-        print(f"[!] File '{feed_file}' not found.")
-        return
+        candidate = os.path.join(os.path.dirname(__file__), feed_file)
+        if os.path.exists(candidate):
+            feed_file = candidate
+        else:
+            print(f"[!] File '{feed_file}' not found.")
+            return
 
     with open(feed_file, "r") as f:
         iocs = json.load(f)
@@ -51,7 +55,9 @@ def process_feed(feed_file):
     for h in valid_hashes:
         print(f" • [SHA] {h['ioc'][:24]}... | {h['threat']}")
 
-    output_file = "feeds/normalized_edr_threat_list.json"
+    output_dir = os.path.join(os.path.dirname(__file__), "feeds")
+    os.makedirs(output_dir, exist_ok=True)
+    output_file = os.path.join(output_dir, "normalized_edr_threat_list.json")
     normalized = {"ips": [x["ioc"] for x in valid_ips], "hashes": [x["ioc"] for x in valid_hashes]}
     with open(output_file, "w") as out:
         json.dump(normalized, out, indent=2)
@@ -60,5 +66,5 @@ def process_feed(feed_file):
     print("==========================================================")
 
 if __name__ == "__main__":
-    feed = sys.argv[1] if len(sys.argv) > 1 else "feeds/sample_c2_feed.json"
+    feed = sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(__file__), "feeds", "sample_c2_feed.json")
     process_feed(feed)
