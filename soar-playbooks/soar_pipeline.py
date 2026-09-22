@@ -178,14 +178,40 @@ def isolate_endpoint(sensor_id):
         
     return False
 
+def normalize_event(raw):
+    """Normalizes authentic LimaCharlie EDR detection webhooks into standard SOC event fields."""
+    if "detect" in raw:
+        detect = raw.get("detect", {})
+        ev = detect.get("event", {})
+        routing = detect.get("routing", {})
+        return {
+            "detection_name": raw.get("rule_name") or raw.get("cat", "EDR Detection Alert"),
+            "mitre_id": raw.get("mitre_id", "T1105"),
+            "hostname": routing.get("hostname", "WIN10-ENT-LAB"),
+            "ip": routing.get("int_ip", "192.168.56.105"),
+            "user": ev.get("USER_NAME", "DESKTOP-TEST\\DilMahmud"),
+            "sensor_id": routing.get("sid", routing.get("oid", "8a72b94f-12d4-49c0-9fa1-abc123456789")),
+            "command_line": ev.get("COMMAND_LINE", ev.get("FILE_PATH", "N/A")),
+            "file_hash": ev.get("HASH", "275a021bbfb6489e54d471899f7db9d1663fc695ec2fe2a2c4538aabf651fd0f"),
+            "timestamp": raw.get("timestamp", datetime.datetime.now(datetime.timezone.utc).isoformat())
+        }
+    return raw
+
 def run_pipeline(mock_event):
     """Main execution loop simulating the SOAR pipeline."""
+    mock_event = normalize_event(mock_event)
+
     print("==========================================================")
     print("  🚀 Starting SOAR Pipeline Workflow Execution")
     print("==========================================================")
     
     # 1. Parse Event
-    print(f"[1] Ingested event from {mock_event['hostname']} ({mock_event['detection_name']})")
+    print(f"[1] Ingested EDR Telemetry Event from {mock_event['hostname']}")
+    print(f" • Rule Name:    {mock_event['detection_name']}")
+    print(f" • MITRE Tech:   {mock_event['mitre_id']}")
+    print(f" • Endpoint:     {mock_event['hostname']} ({mock_event['ip']})")
+    print(f" • User Account: {mock_event['user']}")
+    print(f" • Command Line: {mock_event['command_line']}")
     
     # 2. Enrich with VirusTotal
     vt_result = query_virustotal(mock_event['file_hash'])
@@ -213,17 +239,32 @@ def run_pipeline(mock_event):
     print("==========================================================")
 
 if __name__ == "__main__":
-    # Sample incident event emulating an Atomic Red Team execution
-    sample_incident = {
-        "detection_name": "T1105 - Ingress Tool Transfer (certutil.exe)",
-        "mitre_id": "T1105",
-        "hostname": "WIN10-ENT-LAB",
-        "ip": "192.168.56.105",
-        "user": "DESKTOP-TEST\\DilMahmud",
-        "sensor_id": "8a72b94f-12d4-49c0-9fa1-abc123456789",
-        "command_line": "certutil.exe -urlcache -split -f https://secure.eicar.org/eicar.com payload.tmp",
-        "file_hash": "275a021bbfb6489e54d471899f7db9d1663fc695ec2fe2a2c4538aabf651fd0f",
-        "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat()
-    }
+    event_path = None
+    if "--event" in sys.argv:
+        idx = sys.argv.index("--event")
+        if idx + 1 < len(sys.argv):
+            event_path = sys.argv[idx + 1]
+
+    if event_path and os.path.exists(event_path):
+        with open(event_path, "r") as f:
+            target_event = json.load(f)
+    else:
+        # Load authentic LimaCharlie telemetry sample from scenario 1 if present
+        default_sample = os.path.join(os.path.dirname(__file__), "..", "scenarios", "scenario-1-certutil-lolbas", "sample_edr_telemetry.json")
+        if os.path.exists(default_sample):
+            with open(default_sample, "r") as f:
+                target_event = json.load(f)
+        else:
+            target_event = {
+                "detection_name": "T1105 - Ingress Tool Transfer (certutil.exe)",
+                "mitre_id": "T1105",
+                "hostname": "WIN10-ENT-LAB",
+                "ip": "192.168.56.105",
+                "user": "DESKTOP-TEST\\DilMahmud",
+                "sensor_id": "8a72b94f-12d4-49c0-9fa1-abc123456789",
+                "command_line": "certutil.exe -urlcache -split -f https://secure.eicar.org/eicar.com payload.tmp",
+                "file_hash": "275a021bbfb6489e54d471899f7db9d1663fc695ec2fe2a2c4538aabf651fd0f",
+                "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat()
+            }
     
-    run_pipeline(sample_incident)
+    run_pipeline(target_event)

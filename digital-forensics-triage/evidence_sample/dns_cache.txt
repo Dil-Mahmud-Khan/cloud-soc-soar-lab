@@ -1,0 +1,6 @@
+Entry                                   RecordName                             Data
+-----                                   ----------                             ----
+secure.eicar.org                        secure.eicar.org                       89.238.73.97
+mail.attacker-c2.net                    mail.attacker-c2.net                   198.51.100.42
+app.limacharlie.io                      app.limacharlie.io                     35.244.181.201
+login.microsoftonline.com               login.microsoftonline.com              20.190.159.0

@@ -25,11 +25,36 @@
 
 ---
 
-## 3. Threat Hunting Query (EDR Telemetry)
+## 3. Threat Hunting Queries Across SIEM & EDR Platforms
 
-In the LimaCharlie Sensor Timeline search:
+### A. LimaCharlie EDR Timeline Query
 ```text
-event.FILE_PATH:*certutil.exe AND (event.COMMAND_LINE:*urlcache* OR event.COMMAND_LINE:*split*)
+event.FILE_PATH:*certutil.exe AND (event.COMMAND_LINE:*urlcache* OR event.COMMAND_LINE:*split* OR event.COMMAND_LINE:*f*)
+```
+
+### B. Microsoft Defender for Endpoint / Sentinel (KQL)
+```kusto
+DeviceProcessEvents
+| where Timestamp >= ago(7d)
+| where FileName =~ "certutil.exe" or ProcessCommandLine has "certutil"
+| where ProcessCommandLine has_any ("-urlcache", "-split", "http://", "https://")
+| project Timestamp, DeviceName, AccountName, ProcessCommandLine, InitiatingProcessFileName, InitiatingProcessCommandLine, MD5
+| sort by Timestamp desc
+```
+
+### C. Splunk Enterprise Security (SPL)
+```spl
+index=windows (EventCode=4688 OR EventCode=1) Image="*\\certutil.exe"
+| where match(CommandLine, "(?i)(-urlcache|-split|http)")
+| table _time, host, user, ParentImage, Image, CommandLine
+| sort - _time
+```
+
+### D. Elastic Security / Sysmon (EQL)
+```eql
+process where event.type == "start" and
+  process.name == "certutil.exe" and
+  process.args in ("-urlcache", "-split")
 ```
 
 ---

@@ -1,0 +1,35 @@
+{
+  "cat": "lsass_dump_comsvcs",
+  "detect": {
+    "event": {
+      "COMMAND_LINE": "rundll32.exe C:\\Windows\\System32\\comsvcs.dll, MiniDump 748 C:\\LabAttacks\\lsass_simulated.dmp full",
+      "FILE_PATH": "C:\\Windows\\System32\\rundll32.exe",
+      "HASH": "a34bf8e9072c4189acbe12389fed910248abefc910385920abef912093849182",
+      "PARENT": {
+        "COMMAND_LINE": "\"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe\"",
+        "FILE_PATH": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+        "PROCESS_ID": 3912
+      },
+      "PROCESS_ID": 5840,
+      "TARGET_PROCESS": {
+        "COMMAND_LINE": "C:\\Windows\\system32\\lsass.exe",
+        "FILE_PATH": "C:\\Windows\\System32\\lsass.exe",
+        "PROCESS_ID": 748,
+        "ACCESS_MASK": "0x1FFFFF"
+      },
+      "USER_NAME": "DESKTOP-TEST\\DilMahmud"
+    },
+    "routing": {
+      "hostname": "WIN10-ENT-LAB",
+      "int_ip": "192.168.56.105",
+      "oid": "8a72b94f-12d4-49c0-9fa1-abc123456789",
+      "sid": "e8b2c490-6712-4fa0-b389-c45981023bc4",
+      "tags": ["corp", "workstation", "windows10", "lab"]
+    }
+  },
+  "namespace": "detection",
+  "rule_name": "T1003.001 - OS Credential Dumping (LSASS comsvcs)",
+  "mitre_id": "T1003.001",
+  "severity": "P1",
+  "timestamp": "2026-09-22T16:15:02Z"
+}

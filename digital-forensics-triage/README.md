@@ -46,3 +46,13 @@ I authored a lightweight PowerShell triage script designed to run remotely via L
 # Run with Administrator privileges
 powershell.exe -ExecutionPolicy Bypass -File .\collect_triage.ps1
 ```
+
+---
+
+## 3. Sample Evidence Package (`evidence_sample/`)
+
+An authentic sample triage output captured from the Windows 10 victim VM during the Certutil LOLBAS and LSASS dump incidents is provided in [`evidence_sample/`](evidence_sample/):
+* [`network_sockets.txt`](evidence_sample/network_sockets.txt): Captures active C2 connection (`PID 4928 -> 89.238.73.97:443`).
+* [`process_list.csv`](evidence_sample/process_list.csv): Process lineage showing `explorer.exe -> cmd.exe -> certutil.exe` and `powershell.exe -> rundll32.exe comsvcs.dll`.
+* [`dns_cache.txt`](evidence_sample/dns_cache.txt): Host DNS resolver cache containing adversary infrastructure domains.
+* [`registry_persistence.txt`](evidence_sample/registry_persistence.txt): Triage audit identifying suspicious Run key in `HKCU`.

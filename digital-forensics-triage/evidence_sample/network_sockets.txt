@@ -1,0 +1,15 @@
+Active Connections
+
+  Proto  Local Address          Foreign Address        State           PID
+  TCP    0.0.0.0:135            0.0.0.0:0              LISTENING       940
+  TCP    0.0.0.0:445            0.0.0.0:0              LISTENING       4
+  TCP    0.0.0.0:3389           0.0.0.0:0              LISTENING       1184
+  TCP    0.0.0.0:49664          0.0.0.0:0              LISTENING       684
+  TCP    0.0.0.0:49665          0.0.0.0:0              LISTENING       1044
+  TCP    127.0.0.1:49670        127.0.0.1:49671        ESTABLISHED     2140
+  TCP    192.168.56.105:49821   89.238.73.97:443       ESTABLISHED     4928
+  TCP    192.168.56.105:50112   198.51.100.42:8080     SYN_SENT        6112
+  UDP    0.0.0.0:5353           *:*                                    1044
+  UDP    0.0.0.0:5355           *:*                                    1044
+  UDP    192.168.56.105:137     *:*                                    4
+  UDP    192.168.56.105:138     *:*                                    4

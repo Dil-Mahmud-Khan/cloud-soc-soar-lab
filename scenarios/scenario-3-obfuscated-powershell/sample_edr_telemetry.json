@@ -1,0 +1,30 @@
+{
+  "cat": "powershell_encoded_execution",
+  "detect": {
+    "event": {
+      "COMMAND_LINE": "powershell.exe -NoProfile -ExecutionPolicy Bypass -EncodedCommand VwByAGkAdABlAC0ASABvAHMAdAAgACcAUwBpAG0AdQBsAGEAdABlAGQAIABNAGEAbABpAGMAaQBvAHUAcwAgAFAAYQB5AGwAbwBhAGQAJwA=",
+      "DECODED_COMMAND": "Write-Host 'Simulated Malicious Payload'",
+      "FILE_PATH": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "HASH": "7353f53217ac51125298a002236e76cf0a28399587f7d1b32d20387532298a00",
+      "PARENT": {
+        "COMMAND_LINE": "\"C:\\Windows\\System32\\cmd.exe\"",
+        "FILE_PATH": "C:\\Windows\\System32\\cmd.exe",
+        "PROCESS_ID": 3812
+      },
+      "PROCESS_ID": 6112,
+      "USER_NAME": "DESKTOP-TEST\\DilMahmud"
+    },
+    "routing": {
+      "hostname": "WIN10-ENT-LAB",
+      "int_ip": "192.168.56.105",
+      "oid": "8a72b94f-12d4-49c0-9fa1-abc123456789",
+      "sid": "e8b2c490-6712-4fa0-b389-c45981023bc4",
+      "tags": ["corp", "workstation", "windows10", "lab"]
+    }
+  },
+  "namespace": "detection",
+  "rule_name": "T1059.001 - Obfuscated PowerShell Execution (-enc)",
+  "mitre_id": "T1059.001",
+  "severity": "P3",
+  "timestamp": "2026-09-22T17:05:00Z"
+}
