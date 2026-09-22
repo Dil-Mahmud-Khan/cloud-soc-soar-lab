@@ -3,263 +3,1234 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SecOps Cloud Console | LimaCharlie EDR & Tines SOAR</title>
+  <title>Donezo SecOps | Cloud SOC Console & Automated SOAR</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-body: #070b14;
-      --bg-sidebar: #0b1120;
-      --bg-card: #0f172a;
-      --bg-card-hover: #1e293b;
-      --border: #1e293b;
-      --border-accent: #334155;
-      --text: #f1f5f9;
-      --text-muted: #64748b;
-      --text-secondary: #94a3b8;
-      --red: #ef4444;
-      --red-bg: rgba(239, 68, 68, 0.12);
-      --yellow: #f59e0b;
-      --yellow-bg: rgba(245, 158, 11, 0.12);
-      --green: #10b981;
-      --green-bg: rgba(16, 185, 129, 0.12);
-      --blue: #38bdf8;
-      --blue-bg: rgba(56, 189, 248, 0.12);
-      --purple: #a855f7;
+      --canvas-bg: #eceff2;
+      --app-bg: #ffffff;
+      --sidebar-bg: #fafbfc;
+      --card-bg: #ffffff;
+      --card-border: #f0f2f4;
+      --card-hover: #f8fafc;
+      
+      --forest-dark: #12382c;
+      --forest-primary: #174d3d;
+      --forest-medium: #1f634f;
+      --forest-light: #2d8a6e;
+      --mint-bg: #eaf8f3;
+      --mint-border: #c8edd9;
+      --mint-text: #174d3d;
+
+      --text-title: #101828;
+      --text-body: #344054;
+      --text-muted: #667085;
+      --text-light: #98a2b3;
+
+      --red: #d92d20;
+      --red-bg: #fef3f2;
+      --red-border: #fee4e2;
+
+      --amber: #b54708;
+      --amber-bg: #fffaeb;
+      --amber-border: #fedf89;
+
+      --blue: #026aa2;
+      --blue-bg: #f0f9ff;
+      --blue-border: #b9e6fe;
+
+      --shadow-app: 0 20px 45px -12px rgba(16, 24, 40, 0.08);
+      --shadow-card: 0 2px 8px 0 rgba(16, 24, 40, 0.04);
+      --shadow-hover: 0 8px 16px -4px rgba(16, 24, 40, 0.06);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif; }
-    body { background: var(--bg-body); color: var(--text); display: flex; height: 100vh; overflow: hidden; font-size: 13px; }
+    body.dark-theme {
+      --canvas-bg: #070b12;
+      --app-bg: #0d1522;
+      --sidebar-bg: #09101a;
+      --card-bg: #111c2d;
+      --card-border: #1a293f;
+      --card-hover: #162438;
 
-    /* Sidebar */
-    aside { width: 240px; background: var(--bg-sidebar); border-right: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; }
-    .brand { padding: 20px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
-    .brand-logo { width: 28px; height: 28px; background: linear-gradient(135deg, #0284c7, #38bdf8); border-radius: 6px; display: grid; place-items: center; font-weight: 800; color: #fff; font-size: 14px; }
-    .brand-text h1 { font-size: 14px; font-weight: 700; color: #fff; letter-spacing: -0.2px; }
-    .brand-text p { font-size: 11px; color: var(--text-muted); }
-    
-    .nav-menu { padding: 16px 8px; flex: 1; display: flex; flex-direction: column; gap: 4px; }
-    .nav-item { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 6px; color: var(--text-secondary); text-decoration: none; cursor: pointer; transition: 0.15s; font-weight: 500; }
-    .nav-item:hover, .nav-item.active { background: var(--bg-card); color: #fff; }
-    .nav-item.active { color: var(--blue); background: rgba(56, 189, 248, 0.08); font-weight: 600; }
-    .nav-badge { margin-left: auto; background: var(--red); color: #fff; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 99px; }
+      --forest-dark: #1f634f;
+      --forest-primary: #2d8a6e;
+      --forest-medium: #3bb38f;
+      --forest-light: #52cca7;
+      --mint-bg: rgba(45, 138, 110, 0.15);
+      --mint-border: rgba(45, 138, 110, 0.3);
+      --mint-text: #52cca7;
 
-    .analyst-footer { padding: 14px 16px; border-top: 1px solid var(--border); background: rgba(0,0,0,0.15); display: flex; align-items: center; gap: 10px; }
-    .avatar { width: 32px; height: 32px; border-radius: 50%; background: #334155; display: grid; place-items: center; font-weight: 700; color: var(--blue); font-size: 12px; }
-    .analyst-info h4 { font-size: 12px; color: #fff; }
-    .analyst-info p { font-size: 10px; color: var(--text-muted); }
+      --text-title: #f8fafc;
+      --text-body: #cbd5e1;
+      --text-muted: #94a3b8;
+      --text-light: #64748b;
 
-    /* Main Container */
-    main { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: var(--bg-body); }
-    
-    /* Top Bar */
-    header { height: 56px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; background: var(--bg-sidebar); }
-    .header-left { display: flex; align-items: center; gap: 16px; }
-    .env-tag { font-size: 11px; background: var(--green-bg); color: var(--green); border: 1px solid rgba(16, 185, 129, 0.3); padding: 3px 8px; border-radius: 4px; font-weight: 600; }
-    .search-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; padding: 6px 12px; color: #fff; font-size: 12px; width: 280px; outline: none; }
-    .search-box:focus { border-color: var(--blue); }
+      --shadow-app: 0 20px 45px -12px rgba(0, 0, 0, 0.5);
+      --shadow-card: 0 2px 8px 0 rgba(0, 0, 0, 0.3);
+      --shadow-hover: 0 8px 16px -4px rgba(0, 0, 0, 0.4);
+    }
 
-    /* Content Area */
-    .content-area { flex: 1; overflow-y: auto; padding: 20px 24px; display: flex; flex-direction: column; gap: 20px; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
 
-    /* Metric Cards Grid */
-    .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
-    .kpi-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; }
-    .kpi-title { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
-    .kpi-value { font-size: 24px; font-weight: 800; color: #fff; letter-spacing: -0.5px; }
-    .kpi-sub { font-size: 11px; display: flex; align-items: center; gap: 4px; }
-    .kpi-sub.pos { color: var(--green); }
-    .kpi-sub.neutral { color: var(--blue); }
+    body {
+      background-color: var(--canvas-bg);
+      color: var(--text-body);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+      font-size: 13px;
+      line-height: 1.45;
+      
+      transition: background-color 0.25s ease;
+    }
 
-    /* Workspace 2-Column Layout */
-    .workspace-grid { display: grid; grid-template-columns: 1.8fr 1.2fr; gap: 20px; align-items: start; }
+    /* Outer Desktop App Frame */
+    .app-shell {
+      width: 100%;
+      max-width: 1440px;
+      min-height: 960px; height: auto;
+      background: var(--app-bg);
+      border-radius: 28px;
+      box-shadow: var(--shadow-app);
+      display: flex;
+      overflow: hidden;
+      border: 1px solid rgba(0, 0, 0, 0.04);
+      position: relative;
+    }
 
-    /* Panel Card */
-    .panel { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; }
-    .panel-header { padding: 14px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-    .panel-header h3 { font-size: 13px; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 8px; }
-    
-    /* Filter Tabs */
-    .tab-pills { display: flex; gap: 6px; }
-    .tab-pill { background: transparent; border: 1px solid transparent; color: var(--text-muted); font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 4px; cursor: pointer; }
-    .tab-pill.active { background: #1e293b; color: #fff; border-color: var(--border-accent); }
+    /* Left Sidebar */
+    aside {
+      width: 250px;
+      background: var(--sidebar-bg);
+      border-right: 1px solid var(--card-border);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      padding: 24px 18px;
+      justify-content: space-between;
+    }
+
+    .brand-area {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-bottom: 24px;
+    }
+
+    .brand-icon {
+      width: 34px;
+      height: 34px;
+      background: var(--forest-primary);
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: #ffffff;
+      font-weight: 800;
+      box-shadow: 0 4px 8px rgba(23, 77, 61, 0.25);
+    }
+
+    .brand-icon svg {
+      width: 18px;
+      height: 18px;
+      fill: none;
+      stroke: #ffffff;
+      stroke-width: 2.2;
+    }
+
+    .brand-title {
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--text-title);
+      letter-spacing: -0.4px;
+    }
+
+    .nav-section {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      margin-bottom: 20px;
+    }
+
+    .nav-header {
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--text-light);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      padding: 0 12px 6px 12px;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 13px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      position: relative;
+    }
+
+    .nav-link:hover {
+      background: var(--card-hover);
+      color: var(--text-title);
+    }
+
+    .nav-link.active {
+      color: var(--text-title);
+      font-weight: 700;
+      background: transparent;
+    }
+
+    .nav-link.active::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 6px;
+      bottom: 6px;
+      width: 4px;
+      background: var(--forest-primary);
+      border-radius: 4px;
+    }
+
+    .nav-icon {
+      width: 18px;
+      height: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+    }
+
+    .nav-link.active .nav-icon {
+      color: var(--forest-primary);
+    }
+
+    .nav-badge {
+      margin-left: auto;
+      background: var(--forest-primary);
+      color: #ffffff;
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 99px;
+    }
+
+    /* Sidebar Promo Card */
+    .sidebar-widget {
+      background: linear-gradient(145deg, #102e23, #164e3d);
+      border-radius: 18px;
+      padding: 16px;
+      color: #ffffff;
+      position: relative;
+      overflow: hidden;
+      margin-top: 10px;
+      box-shadow: 0 10px 20px -5px rgba(22, 78, 61, 0.35);
+    }
+
+    .sidebar-widget::after {
+      content: "";
+      position: absolute;
+      right: -20px;
+      bottom: -20px;
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      border: 12px solid rgba(255, 255, 255, 0.06);
+      pointer-events: none;
+    }
+
+    .widget-badge {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.15);
+      display: grid;
+      place-items: center;
+      margin-bottom: 10px;
+      font-size: 11px;
+    }
+
+    .widget-title {
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 3px;
+    }
+
+    .widget-sub {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 12px;
+    }
+
+    .widget-btn {
+      width: 100%;
+      padding: 7px;
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 99px;
+      color: #ffffff;
+      font-size: 11.5px;
+      font-weight: 600;
+      cursor: pointer;
+      backdrop-filter: blur(4px);
+      transition: background 0.15s;
+    }
+
+    .widget-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    /* Main Content Area */
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      padding: 24px 30px;
+      background: var(--app-bg);
+      gap: 20px;
+    }
+
+    /* Top App Bar */
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .search-wrapper {
+      position: relative;
+      width: 380px;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-light);
+      pointer-events: none;
+    }
+
+    .search-input {
+      width: 100%;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 99px;
+      padding: 10px 45px 10px 40px;
+      font-size: 12.5px;
+      color: var(--text-title);
+      outline: none;
+      transition: all 0.2s ease;
+      box-shadow: var(--shadow-card);
+    }
+
+    .search-input:focus {
+      border-color: var(--forest-primary);
+      box-shadow: 0 0 0 3px var(--mint-bg);
+    }
+
+    .search-shortcut {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: var(--card-hover);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-muted);
+      padding: 2px 5px;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .icon-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: all 0.15s;
+      box-shadow: var(--shadow-card);
+    }
+
+    .icon-btn:hover {
+      background: var(--card-hover);
+      color: var(--text-title);
+      transform: translateY(-1px);
+    }
+
+    .user-pill {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 4px 12px 4px 6px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 99px;
+      cursor: pointer;
+      box-shadow: var(--shadow-card);
+    }
+
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--forest-primary);
+      color: #ffffff;
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      font-size: 12px;
+    }
+
+    .user-info {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.2;
+    }
+
+    .user-name {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--text-title);
+    }
+
+    .user-email {
+      font-size: 10.5px;
+      color: var(--text-muted);
+    }
+
+    /* Page Header Title & Action Buttons */
+    .dashboard-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-top: 4px;
+    }
+
+    .header-text h1 {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--text-title);
+      letter-spacing: -0.6px;
+      margin-bottom: 4px;
+    }
+
+    .header-text p {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .header-buttons {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .pill-btn {
+      padding: 9px 20px;
+      border-radius: 99px;
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.15s ease;
+      border: none;
+    }
+
+    .btn-forest {
+      background: var(--forest-primary);
+      color: #ffffff;
+      box-shadow: 0 4px 10px rgba(23, 77, 61, 0.25);
+    }
+
+    .btn-forest:hover {
+      background: var(--forest-dark);
+      transform: translateY(-1px);
+    }
+
+    .btn-outline {
+      background: var(--card-bg);
+      color: var(--text-title);
+      border: 1px solid var(--card-border);
+      box-shadow: var(--shadow-card);
+    }
+
+    .btn-outline:hover {
+      background: var(--card-hover);
+      transform: translateY(-1px);
+    }
+
+    /* KPI Row */
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .kpi-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 18px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 128px;
+      box-shadow: var(--shadow-card);
+      position: relative;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .kpi-card.hero-dark {
+      background: linear-gradient(145deg, #133c2f, #1b5343);
+      color: #ffffff;
+      border: none;
+      box-shadow: 0 10px 24px -6px rgba(23, 77, 61, 0.4);
+    }
+
+    .kpi-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .kpi-title {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .kpi-card.hero-dark .kpi-title {
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .kpi-arrow-circle {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 1px solid var(--card-border);
+      display: grid;
+      place-items: center;
+      color: var(--text-title);
+      font-size: 12px;
+    }
+
+    .kpi-card.hero-dark .kpi-arrow-circle {
+      border-color: rgba(255, 255, 255, 0.25);
+      color: #ffffff;
+    }
+
+    .kpi-value {
+      font-size: 30px;
+      font-weight: 800;
+      color: var(--text-title);
+      letter-spacing: -0.8px;
+      line-height: 1.1;
+      margin: 8px 0;
+    }
+
+    .kpi-card.hero-dark .kpi-value {
+      color: #ffffff;
+    }
+
+    .kpi-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .kpi-card.hero-dark .kpi-pill {
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    .pill-chip {
+      background: var(--mint-bg);
+      color: var(--forest-primary);
+      padding: 1px 6px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 10px;
+    }
+
+    .kpi-card.hero-dark .pill-chip {
+      background: rgba(255, 255, 255, 0.18);
+      color: #ffffff;
+    }
+
+    /* Main 2-Column Grid Layout */
+    .workspace-layout {
+      display: grid;
+      grid-template-columns: 1.95fr 1.15fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    /* Content Cards */
+    .content-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: var(--shadow-card);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-header-donezo {
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .card-title {
+      font-size: 14.5px;
+      font-weight: 800;
+      color: var(--text-title);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      letter-spacing: -0.2px;
+    }
+
+    .filter-tabs {
+      display: flex;
+      gap: 6px;
+      background: var(--card-hover);
+      padding: 3px;
+      border-radius: 99px;
+      border: 1px solid var(--card-border);
+    }
+
+    .filter-btn {
+      background: transparent;
+      border: none;
+      padding: 4px 12px;
+      border-radius: 99px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .filter-btn.active {
+      background: var(--card-bg);
+      color: var(--forest-primary);
+      font-weight: 700;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
 
     /* Incident Queue Table */
-    .incident-table { width: 100%; border-collapse: collapse; text-align: left; }
-    .incident-table th { padding: 10px 14px; font-size: 11px; color: var(--text-muted); font-weight: 600; border-bottom: 1px solid var(--border); background: rgba(0,0,0,0.1); }
-    .incident-table td { padding: 12px 14px; border-bottom: 1px solid var(--border); font-size: 12px; color: var(--text-secondary); vertical-align: middle; }
-    .incident-row { cursor: pointer; transition: 0.1s; }
-    .incident-row:hover { background: var(--bg-card-hover); }
-    .incident-row.selected { background: rgba(56, 189, 248, 0.06); }
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    .incident-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    .incident-table th {
+      padding: 9px 10px;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-light);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--card-border);
+      background: var(--sidebar-bg);
+      white-space: nowrap;
+    }
+
+    .incident-table td {
+      padding: 9px 10px;
+      border-bottom: 1px solid var(--card-border);
+      font-size: 11.5px;
+      color: var(--text-body);
+      vertical-align: middle;
+    }
     
-    .sev-pill { display: inline-block; padding: 2px 6px; border-radius: 3px; font-size: 10px; font-weight: 700; }
-    .sev-p1 { background: var(--red-bg); color: var(--red); border: 1px solid rgba(239, 68, 68, 0.3); }
-    .sev-p2 { background: var(--yellow-bg); color: var(--yellow); border: 1px solid rgba(245, 158, 11, 0.3); }
-    .sev-p3 { background: var(--blue-bg); color: var(--blue); border: 1px solid rgba(56, 189, 248, 0.3); }
+    .incident-table td:nth-child(1) { font-size: 11px; white-space: nowrap; }
+    .incident-table td:nth-child(2) { text-align: center; }
+    .incident-table td:nth-child(4) { font-size: 11px; color: var(--text-muted); }
+    .incident-table td:nth-child(5) { font-size: 11px; }
+    .incident-table td:nth-child(6) { white-space: nowrap; }
 
-    .status-badge { display: inline-block; padding: 2px 8px; border-radius: 99px; font-size: 10px; font-weight: 600; }
-    .status-active { background: var(--red-bg); color: var(--red); }
-    .status-contained { background: var(--green-bg); color: var(--green); }
-    .status-closed { background: #1e293b; color: var(--text-muted); }
+    .incident-row {
+      cursor: pointer;
+      transition: background 0.1s ease;
+    }
 
-    /* Detail Drawer Panel */
-    .drawer-body { padding: 18px; display: flex; flex-direction: column; gap: 14px; }
-    .detail-section { display: flex; flex-direction: column; gap: 4px; }
-    .detail-label { font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; }
-    .detail-value { font-size: 12px; color: #fff; }
-    
-    .code-block { background: #060911; border: 1px solid #1e293b; border-radius: 4px; padding: 10px 12px; font-family: "JetBrains Mono", Consolas, monospace; font-size: 11px; color: #38bdf8; word-break: break-all; }
-    .tree-box { background: #060911; border: 1px solid #1e293b; border-radius: 4px; padding: 10px 12px; font-family: monospace; font-size: 11px; line-height: 1.6; color: #cbd5e1; }
+    .incident-row:hover {
+      background: var(--card-hover);
+    }
 
-    .action-button-row { display: flex; gap: 8px; margin-top: 8px; }
-    .btn { padding: 8px 14px; border-radius: 4px; font-size: 12px; font-weight: 600; cursor: pointer; border: none; transition: 0.15s; }
-    .btn-isolate { background: var(--red); color: #fff; }
-    .btn-isolate:hover { background: #dc2626; }
-    .btn-triage { background: #1e293b; color: #fff; border: 1px solid var(--border-accent); }
-    .btn-triage:hover { background: #334155; }
+    .incident-row.selected {
+      background: var(--mint-bg);
+    }
 
-    /* Live SOAR Execution Log */
-    .terminal-stream { background: #060911; border: 1px solid var(--border); border-radius: 6px; padding: 12px; height: 160px; overflow-y: auto; font-family: monospace; font-size: 11px; color: #94a3b8; line-height: 1.6; }
-    .term-line { display: flex; gap: 8px; }
-    .term-time { color: var(--blue); }
-    .term-alert { color: var(--red); font-weight: 700; }
-    .term-success { color: var(--green); }
+    .sev-pill {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    .sev-p1 {
+      background: var(--red-bg);
+      color: var(--red);
+      border: 1px solid var(--red-border);
+    }
+
+    .sev-p2 {
+      background: var(--amber-bg);
+      color: var(--amber);
+      border: 1px solid var(--amber-border);
+    }
+
+    .sev-p3 {
+      background: var(--mint-bg);
+      color: var(--forest-primary);
+      border: 1px solid var(--mint-border);
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 9px;
+      border-radius: 99px;
+      font-size: 10.5px;
+      font-weight: 600;
+    }
+
+    .status-active {
+      background: var(--red-bg);
+      color: var(--red);
+      border: 1px solid var(--red-border);
+    }
+
+    .status-contained {
+      background: var(--mint-bg);
+      color: var(--forest-primary);
+      border: 1px solid var(--mint-border);
+    }
+
+    .status-closed {
+      background: var(--card-hover);
+      color: var(--text-muted);
+      border: 1px solid var(--card-border);
+    }
+
+    /* Detail Drawer Card */
+    .drawer-card {
+      padding: 18px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .detail-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .detail-meta-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-light);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+
+    .detail-title-val {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--text-title);
+      letter-spacing: -0.2px;
+    }
+
+    .detail-2col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .code-box {
+      background: var(--sidebar-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-family: 'JetBrains Mono', Consolas, monospace;
+      font-size: 11px;
+      color: var(--forest-primary);
+      font-weight: 500;
+      word-break: break-all;
+      line-height: 1.5;
+    }
+
+    .tree-box {
+      background: var(--sidebar-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-family: 'JetBrains Mono', Consolas, monospace;
+      font-size: 11px;
+      color: var(--text-body);
+      line-height: 1.55;
+    }
+
+    .vt-card {
+      background: var(--mint-bg);
+      border: 1px solid var(--mint-border);
+      border-radius: 12px;
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .action-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .action-btn {
+      flex: 1;
+      padding: 10px 14px;
+      border-radius: 99px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .btn-contain {
+      background: var(--red);
+      color: #ffffff;
+      box-shadow: 0 4px 10px rgba(217, 45, 32, 0.25);
+    }
+
+    .btn-contain:hover {
+      background: #b42318;
+      transform: translateY(-1px);
+    }
+
+    .btn-contain.contained {
+      background: var(--forest-primary);
+      box-shadow: 0 4px 10px rgba(23, 77, 61, 0.25);
+    }
+
+    .btn-triage {
+      background: var(--forest-dark);
+      color: #ffffff;
+      box-shadow: 0 4px 10px rgba(18, 56, 44, 0.25);
+    }
+
+    .btn-triage:hover {
+      background: #0b241c;
+      transform: translateY(-1px);
+    }
+
+    /* Bottom Widgets: Terminal Log + Automation Gauge */
+    .bottom-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 16px;
+    }
+
+    .terminal-container {
+      background: var(--sidebar-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 10px 14px;
+      height: 115px;
+      overflow-y: auto;
+      font-family: 'JetBrains Mono', Consolas, monospace;
+      font-size: 11px;
+      line-height: 1.6;
+      color: var(--text-body);
+    }
+
+    .term-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .term-ts {
+      color: var(--forest-primary);
+      font-weight: 600;
+    }
+
+    .term-alert {
+      color: var(--red);
+      font-weight: 700;
+    }
+
+    .term-ok {
+      color: var(--forest-primary);
+      font-weight: 600;
+    }
+
+    /* Circular Progress / Arc Meter */
+    .progress-widget {
+      padding: 14px 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .progress-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .arc-meter {
+      position: relative;
+      width: 80px;
+      height: 80px;
+      display: grid;
+      place-items: center;
+    }
+
+    .arc-meter svg {
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+    }
+
+    .arc-meter circle {
+      fill: none;
+      stroke-width: 8;
+      stroke-linecap: round;
+    }
+
+    .arc-bg {
+      stroke: var(--card-border);
+    }
+
+    .arc-val {
+      stroke: var(--forest-primary);
+      stroke-dasharray: 226;
+      stroke-dashoffset: 17; /* ~92.5% */
+      transition: stroke-dashoffset 0.5s ease;
+    }
+
+    .arc-center-text {
+      position: absolute;
+      text-align: center;
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--text-title);
+    }
+
+    .progress-legend {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 11px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-muted);
+    }
+
+    .legend-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .dot-green { background: var(--forest-primary); }
+    .dot-light { background: #3bb38f; }
+    .dot-gray { background: var(--card-border); }
   </style>
 </head>
 <body>
 
-  <!-- Sidebar -->
-  <aside>
-    <div class="brand">
-      <div class="brand-logo">LC</div>
-      <div class="brand-text">
-        <h1>Cloud SOC Console</h1>
-        <p>EDR & SOAR Operations</p>
-      </div>
-    </div>
+  <!-- Outer Desktop Shell -->
+  <div class="app-shell">
 
-    <nav class="nav-menu">
-      <a class="nav-item active" onclick="switchView('incidents')">
-        <span>Incident Queue</span>
-        <span class="nav-badge" id="openCount">4</span>
-      </a>
-      <a class="nav-item" onclick="switchView('fleet')">
-        <span>Sensor Fleet</span>
-      </a>
-      <a class="nav-item" onclick="switchView('soar')">
-        <span>SOAR Playbooks</span>
-      </a>
-      <a class="nav-item" onclick="switchView('mitre')">
-        <span>MITRE Navigator</span>
-      </a>
-    </nav>
-
-    <div class="analyst-footer">
-      <div class="avatar">DK</div>
-      <div class="analyst-info">
-        <h4>Dil Mahmud Khan</h4>
-        <p>Lead Blue Team Analyst</p>
-      </div>
-    </div>
-  </aside>
-
-  <!-- Main View -->
-  <main>
-    <header>
-      <div class="header-left">
-        <span class="env-tag">● PRODUCTION CLOUD TELEMETRY</span>
-        <span style="font-size: 12px; color: var(--text-muted);">Organization: <strong>dil-soc-lab</strong> | LimaCharlie EDR Engine v4.3</span>
-      </div>
+    <!-- Left Sidebar -->
+    <aside>
       <div>
-        <input type="text" class="search-box" placeholder="Search host, hash, IP, or technique..." onkeyup="filterIncidents(this.value)">
-      </div>
-    </header>
+        <div class="brand-area">
+          <div class="brand-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"/><path d="M12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16Z"/></svg>
+          </div>
+          <div class="brand-title">Donezo SecOps</div>
+        </div>
 
-    <div class="content-area">
-      <!-- KPI Row -->
+        <div class="nav-section">
+          <div class="nav-header">Menu</div>
+          <a class="nav-link active" onclick="switchNav('dashboard')">
+            <span class="nav-icon">📊</span>
+            <span>Dashboard</span>
+          </a>
+          <a class="nav-link" onclick="switchNav('incidents')">
+            <span class="nav-icon">🛡️</span>
+            <span>Incidents</span>
+            <span class="nav-badge" id="sidebarBadge">7</span>
+          </a>
+          <a class="nav-link" onclick="switchNav('fleet')">
+            <span class="nav-icon">💻</span>
+            <span>Sensor Fleet</span>
+          </a>
+          <a class="nav-link" onclick="switchNav('soar')">
+            <span class="nav-icon">⚡</span>
+            <span>SOAR Stories</span>
+          </a>
+          <a class="nav-link" onclick="switchNav('mitre')">
+            <span class="nav-icon">🗺️</span>
+            <span>MITRE Map</span>
+          </a>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-header">General</div>
+          <a class="nav-link" onclick="switchNav('triage')">
+            <span class="nav-icon">🔬</span>
+            <span>Live Forensics</span>
+          </a>
+          <a class="nav-link" onclick="switchNav('intel')">
+            <span class="nav-icon">🌐</span>
+            <span>VirusTotal v3</span>
+          </a>
+          <a class="nav-link" onclick="switchNav('settings')">
+            <span class="nav-icon">⚙️</span>
+            <span>Settings</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Sidebar Promo Widget -->
+      <div>
+        <div class="sidebar-widget">
+          <div class="widget-badge">LC</div>
+          <div class="widget-title">LimaCharlie EDR</div>
+          <div class="widget-sub">3 Production Sensors Online</div>
+          <button class="widget-btn" onclick="alert('LimaCharlie Cloud Engine v4.3 Connected\nEndpoint: WIN10-ENT-LAB\nTelemetry Streaming: Active')">Telemetry Healthy</button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Workspace -->
+    <main>
+      <!-- Top Bar -->
+      <div class="top-bar">
+        <div class="search-wrapper">
+          <span class="search-icon">🔍</span>
+          <input type="text" class="search-input" placeholder="Search host, hash, IP, or technique..." onkeyup="filterIncidents(this.value)">
+          <span class="search-shortcut">⌘F</span>
+        </div>
+
+        <div class="top-actions">
+          <button class="icon-btn" onclick="alert('Interactive Slack Webhook channel: #soc-alerts (Sync active)')" title="Alert Notifications">
+            <span>🔔</span>
+          </button>
+          <button class="icon-btn" id="themeToggleBtn" onclick="toggleTheme()" title="Switch Light/Dark Theme">
+            <span>🌙</span>
+          </button>
+
+          <div class="user-pill" onclick="alert('Logged in as Lead Blue Team Analyst:\nDil Mahmud Khan\nTenant: dil-soc-lab')">
+            <div class="user-avatar">DK</div>
+            <div class="user-info">
+              <span class="user-name">Dil Mahmud Khan</span>
+              <span class="user-email">dil-soc-lab</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dashboard Title & Action Row -->
+      <div class="dashboard-header">
+        <div class="header-text">
+          <h1>SecOps Dashboard</h1>
+          <p>Plan, prioritize, and contain enterprise threats with automated SOAR playbooks.</p>
+        </div>
+        <div class="header-buttons">
+          <button class="pill-btn btn-forest" onclick="simulateNewDetection()">+ Simulate Threat</button>
+          <button class="pill-btn btn-outline" onclick="exportReport()">Export Telemetry</button>
+        </div>
+      </div>
+
+      <!-- KPI Row (Donezo Style: 1 Forest Dark + 3 Crisp White Cards) -->
       <div class="kpi-row">
-        <div class="kpi-card">
-          <span class="kpi-title">Mean Time to Acknowledge</span>
-          <span class="kpi-value">23.4s</span>
-          <span class="kpi-sub pos">↓ 97.6% via Tines Webhook</span>
+        <!-- Hero Card -->
+        <div class="kpi-card hero-dark">
+          <div class="kpi-top">
+            <span class="kpi-title">Mean Time to Acknowledge</span>
+            <div class="kpi-arrow-circle">↗</div>
+          </div>
+          <div class="kpi-value">23.4s</div>
+          <div class="kpi-pill">
+            <span class="pill-chip">↓ 97.6%</span>
+            <span>via Tines Webhook</span>
+          </div>
         </div>
+
+        <!-- KPI 2 -->
         <div class="kpi-card">
-          <span class="kpi-title">Mean Time to Respond</span>
-          <span class="kpi-value">2.4m</span>
-          <span class="kpi-sub pos">↓ 92.5% Automated Containment</span>
+          <div class="kpi-top">
+            <span class="kpi-title">Mean Time to Respond</span>
+            <div class="kpi-arrow-circle">↗</div>
+          </div>
+          <div class="kpi-value">2.4m</div>
+          <div class="kpi-pill">
+            <span class="pill-chip">↓ 92.5%</span>
+            <span>Automated Containment</span>
+          </div>
         </div>
+
+        <!-- KPI 3 -->
         <div class="kpi-card">
-          <span class="kpi-title">SLA Compliance Rate</span>
-          <span class="kpi-value">100%</span>
-          <span class="kpi-sub pos">7 / 7 Incidents in SLA Target</span>
+          <div class="kpi-top">
+            <span class="kpi-title">Active Incident Stream</span>
+            <div class="kpi-arrow-circle">↗</div>
+          </div>
+          <div class="kpi-value">7 Incidents</div>
+          <div class="kpi-pill">
+            <span class="pill-chip">100%</span>
+            <span>SLA Target Maintained</span>
+          </div>
         </div>
+
+        <!-- KPI 4 -->
         <div class="kpi-card">
-          <span class="kpi-title">Threat Intel Ingestion</span>
-          <span class="kpi-value">VirusTotal v3</span>
-          <span class="kpi-sub neutral">● Automated Hash Enrichment</span>
+          <div class="kpi-top">
+            <span class="kpi-title">Threat Intel Ingestion</span>
+            <div class="kpi-arrow-circle">↗</div>
+          </div>
+          <div class="kpi-value">VirusTotal v3</div>
+          <div class="kpi-pill">
+            <span class="pill-chip">API v3</span>
+            <span>Automated Hash Enrichment</span>
+          </div>
         </div>
       </div>
 
-      <!-- Main Workspace: Queue & Detail Drawer -->
-      <div class="workspace-grid">
-        <!-- Incident Queue -->
-        <div class="panel">
-          <div class="panel-header">
-            <h3>Active Incident Stream</h3>
-            <div class="tab-pills">
-              <button class="tab-pill active" onclick="filterCategory('ALL')">ALL (7)</button>
-              <button class="tab-pill" onclick="filterCategory('P1')">P1 CRITICAL</button>
-              <button class="tab-pill" onclick="filterCategory('P2')">P2 HIGH</button>
-              <button class="tab-pill" onclick="filterCategory('P3')">P3 MEDIUM</button>
+      <!-- Main 2-Column Incident & Investigation Grid -->
+      <div class="workspace-layout">
+        <!-- Left: Incident Table -->
+        <div class="content-card">
+          <div class="card-header-donezo">
+            <div class="card-title">
+              <span>Incident Queue</span>
+            </div>
+            <div class="filter-tabs">
+              <button class="filter-btn active" onclick="filterCategory('ALL')">All (7)</button>
+              <button class="filter-btn" onclick="filterCategory('P1')">P1 Critical</button>
+              <button class="filter-btn" onclick="filterCategory('P2')">P2 High</button>
+              <button class="filter-btn" onclick="filterCategory('P3')">P3 Medium</button>
             </div>
           </div>
 
-          <table class="incident-table" id="incidentTable">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>SEV</th>
-                <th>TECHNIQUE & ATTACK</th>
-                <th>TARGET ENDPOINT</th>
-                <th>VT SCORE</th>
-                <th>STATUS</th>
-              </tr>
-            </thead>
-            <tbody id="incidentTbody">
-              <!-- Rendered via JS -->
-            </tbody>
-          </table>
+          <div class="table-container">
+            <table class="incident-table" id="incidentTable">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Sev</th>
+                  <th>Technique & Attack</th>
+                  <th>Target Endpoint</th>
+                  <th>VT Score</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="incidentTbody">
+                <!-- Populated via JS -->
+              </tbody>
+            </table>
+          </div>
         </div>
 
-        <!-- Detail Drawer -->
-        <div class="panel" id="detailPanel">
-          <div class="panel-header">
-            <h3>Incident Investigation Detail</h3>
+        <!-- Right: Incident Detail Drawer -->
+        <div class="content-card" id="detailCard">
+          <div class="card-header-donezo">
+            <div class="card-title">
+              <span>Incident Investigation</span>
+            </div>
             <span id="detailSevBadge" class="sev-pill sev-p1">P1 CRITICAL</span>
           </div>
 
-          <div class="drawer-body">
-            <div class="detail-section">
-              <span class="detail-label">Incident Name</span>
-              <span class="detail-value" id="detailName" style="font-weight: 700; font-size: 14px;">T1003.001 - OS Credential Dumping (LSASS)</span>
+          <div class="drawer-card">
+            <div class="detail-group">
+              <span class="detail-meta-label">Incident Name</span>
+              <span class="detail-title-val" id="detailName">T1003.001 - OS Credential Dumping (LSASS)</span>
             </div>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-              <div class="detail-section">
-                <span class="detail-label">Affected Endpoint</span>
-                <span class="detail-value" id="detailHost">WIN10-ENT-LAB (192.168.56.105)</span>
+            <div class="detail-2col">
+              <div class="detail-group">
+                <span class="detail-meta-label">Affected Endpoint</span>
+                <span style="font-weight: 700; color: var(--text-title);" id="detailHost">WIN10-ENT-LAB (192.168.56.105)</span>
               </div>
-              <div class="detail-section">
-                <span class="detail-label">Logged User</span>
-                <span class="detail-value" id="detailUser">DESKTOP-TEST\DilMahmud</span>
+              <div class="detail-group">
+                <span class="detail-meta-label">Logged User</span>
+                <span style="font-weight: 700; color: var(--text-title);" id="detailUser">DESKTOP-TEST\DilMahmud</span>
               </div>
             </div>
 
-            <div class="detail-section">
-              <span class="detail-label">Executed Command Line</span>
-              <div class="code-block" id="detailCmd">rundll32.exe C:\Windows\System32\comsvcs.dll, MiniDump 748 lsass_simulated.dmp full</div>
+            <div class="detail-group">
+              <span class="detail-meta-label">Executed Command Line</span>
+              <div class="code-box" id="detailCmd">rundll32.exe C:\Windows\System32\comsvcs.dll, MiniDump 748 lsass_simulated.dmp full</div>
             </div>
 
-            <div class="detail-section">
-              <span class="detail-label">Process Lineage & Heritage</span>
+            <div class="detail-group">
+              <span class="detail-meta-label">Process Lineage & Hierarchy</span>
               <div class="tree-box" id="detailTree">
                 explorer.exe (PID: 2840)<br>
                 &nbsp;&nbsp;└─► powershell.exe (PID: 3912)<br>
@@ -267,39 +1238,66 @@
               </div>
             </div>
 
-            <div class="detail-section">
-              <span class="detail-label">VirusTotal Threat Reputation</span>
-              <div style="display: flex; align-items: center; justify-content: space-between; background: #060911; padding: 8px 12px; border-radius: 4px; border: 1px solid #1e293b;">
-                <span id="detailVtScore" style="color: var(--red); font-weight: 700;">Direct Memory Handle (LSASS Exfiltration)</span>
-                <span style="font-size: 11px; color: var(--text-muted);">Method: Native DLL Injection</span>
+            <div class="detail-group">
+              <span class="detail-meta-label">Threat Intelligence</span>
+              <div class="vt-card">
+                <span id="detailVtScore" style="color: var(--red); font-weight: 700; font-size: 11.5px;">Native LOLBAS Memory Exploit</span>
+                <span style="font-size: 10.5px; color: var(--text-muted);">Method: Memory Handle</span>
               </div>
             </div>
 
-            <div class="action-button-row">
-              <button class="btn btn-isolate" id="btnIsolate" onclick="executeHostIsolation()">🔴 Isolate Endpoint via EDR API</button>
-              <button class="btn btn-triage" onclick="runLiveTriage()">🔬 Run Live Forensics (RFC 3227)</button>
+            <div class="action-row">
+              <button class="action-btn btn-contain" id="btnIsolate" onclick="executeHostIsolation()">🔴 Isolate Endpoint via EDR</button>
+              <button class="action-btn btn-triage" onclick="runLiveTriage()">🔬 Run RFC 3227 Triage</button>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Real-time SOAR Log Terminal -->
-      <div class="panel">
-        <div class="panel-header">
-          <h3>⚡ SOAR Webhook & Containment Pipeline Stream</h3>
-          <span style="font-size: 11px; color: var(--text-muted);">Tines Cloud Engine Sync: Connected</span>
+      <!-- Bottom Row: SOAR Log Stream + Automation Gauge -->
+      <div class="bottom-grid">
+        <div class="content-card">
+          <div class="card-header-donezo">
+            <div class="card-title">
+              <span>⚡ Live SOAR Pipeline & Containment Stream</span>
+            </div>
+            <span style="font-size: 11px; font-weight: 700; color: var(--forest-primary);">● Tines Engine: Connected</span>
+          </div>
+          <div class="terminal-container" id="termStream">
+            <div class="term-row"><span class="term-ts">[15:42:10 UTC]</span> <span>LimaCharlie D&R Rule matched: T1105 Ingress Tool Transfer (certutil.exe)</span></div>
+            <div class="term-row"><span class="term-ts">[15:42:11 UTC]</span> <span>Webhook POST sent to Tines Community Story. Payload size: 1,482 bytes.</span></div>
+            <div class="term-row"><span class="term-ts">[15:42:12 UTC]</span> <span>VirusTotal API v3 query for hash: 275a021b... -> Detections: 58/72 Malicious.</span></div>
+            <div class="term-row"><span class="term-ts">[15:42:13 UTC]</span> <span>Interactive Slack Card posted to channel #soc-alerts with [Isolate] action button.</span></div>
+            <div class="term-row"><span class="term-ts">[15:42:24 UTC]</span> <span class="term-alert">ANALYST APPROVED CONTAINMENT: Host WIN10-ENT-LAB isolated via LimaCharlie API.</span></div>
+            <div class="term-row"><span class="term-ts">[15:42:25 UTC]</span> <span class="term-ok">[✓] Endpoint network isolation verified. Inbound/Outbound traffic dropped. Management channel alive.</span></div>
+          </div>
         </div>
-        <div class="terminal-stream" id="termStream">
-          <div class="term-line"><span class="term-time">[15:42:10 UTC]</span> <span>LimaCharlie D&R Rule matched: T1105 Ingress Tool Transfer (certutil.exe)</span></div>
-          <div class="term-line"><span class="term-time">[15:42:11 UTC]</span> <span>Webhook POST sent to Tines Community Story. Payload size: 1,482 bytes.</span></div>
-          <div class="term-line"><span class="term-time">[15:42:12 UTC]</span> <span>VirusTotal API v3 query for hash: 275a021b... -> Detections: 58/72 Malicious.</span></div>
-          <div class="term-line"><span class="term-time">[15:42:13 UTC]</span> <span>Interactive Slack Card posted to channel #soc-alerts with [Isolate] action button.</span></div>
-          <div class="term-line"><span class="term-time">[15:42:24 UTC]</span> <span class="term-alert">ANALYST APPROVED CONTAINMENT: Host WIN10-ENT-LAB isolated via LimaCharlie API.</span></div>
-          <div class="term-line"><span class="term-time">[15:42:25 UTC]</span> <span class="term-success">[✓] Endpoint network isolation verified. Inbound/Outbound traffic dropped. Management channel alive.</span></div>
+
+        <div class="content-card progress-widget">
+          <div class="card-header-donezo" style="padding: 0 0 10px 0; border: none;">
+            <div class="card-title" style="font-size: 13px;">Automation Rate</div>
+            <span style="font-size: 11px; color: var(--forest-primary); font-weight: 700;">Active</span>
+          </div>
+
+          <div class="progress-content">
+            <div class="arc-meter">
+              <svg viewBox="0 0 80 80">
+                <circle class="arc-bg" cx="40" cy="40" r="34" />
+                <circle class="arc-val" cx="40" cy="40" r="34" />
+              </svg>
+              <div class="arc-center-text">92%</div>
+            </div>
+
+            <div class="progress-legend">
+              <div class="legend-item"><span class="legend-dot dot-green"></span> <span>Automated SOAR</span></div>
+              <div class="legend-item"><span class="legend-dot dot-light"></span> <span>Analyst Approved</span></div>
+              <div class="legend-item"><span class="legend-dot dot-gray"></span> <span>Manual Triage</span></div>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </main>
+    </main>
+  </div>
 
   <script>
     const incidents = [
@@ -393,6 +1391,7 @@
 
     function renderTable(list) {
       const tbody = document.getElementById("incidentTbody");
+      if (!tbody) return;
       tbody.innerHTML = "";
       list.forEach(item => {
         const tr = document.createElement("tr");
@@ -403,11 +1402,11 @@
         const statusClass = item.status === 'ACTIVE' ? 'status-active' : (item.status === 'CONTAINED' ? 'status-contained' : 'status-closed');
 
         tr.innerHTML = `
-          <td><strong>${item.id}</strong></td>
+          <td><strong style="color: var(--text-title);">${item.id}</strong></td>
           <td><span class="sev-pill ${sevClass}">${item.sev}</span></td>
-          <td><strong style="color: #fff;">${item.name}</strong></td>
+          <td><strong style="color: var(--text-title); font-weight: 600;">${item.name}</strong></td>
           <td>${item.host}</td>
-          <td><span style="color: ${item.vt.includes('Malicious') || item.vt.includes('Exploit') ? 'var(--red)' : 'var(--text-secondary)'}; font-weight: 600;">${item.vt}</span></td>
+          <td><span style="color: ${item.vt.includes('Malicious') || item.vt.includes('Exploit') ? 'var(--red)' : 'var(--text-body)'}; font-weight: 600;">${item.vt}</span></td>
           <td><span class="status-badge ${statusClass}">${item.status}</span></td>
         `;
         tbody.appendChild(tr);
@@ -431,11 +1430,11 @@
 
       const btn = document.getElementById("btnIsolate");
       if (item.status === 'CONTAINED') {
-        btn.innerText = "✓ Endpoint Already Network Isolated";
-        btn.style.background = "#1e293b";
+        btn.innerText = "✓ Endpoint Network Isolated";
+        btn.classList.add("contained");
       } else {
-        btn.innerText = "🔴 Isolate Endpoint via EDR API";
-        btn.style.background = "var(--red)";
+        btn.innerText = "🔴 Isolate Endpoint via EDR";
+        btn.classList.remove("contained");
       }
     }
 
@@ -445,10 +1444,10 @@
 
       const stream = document.getElementById("termStream");
       const time = new Date().toISOString().substring(11, 19);
-      const line = document.createElement("div");
-      line.className = "term-line";
-      line.innerHTML = `<span class="term-time">[${time} UTC]</span> <span class="term-alert">API CALL EXECUTED: POST /v1/sensor/${currentIncident.host}/isolation -> SUCCESS</span>`;
-      stream.prepend(line);
+      const row = document.createElement("div");
+      row.className = "term-row";
+      row.innerHTML = `<span class="term-ts">[${time} UTC]</span> <span class="term-alert">API CALL EXECUTED: POST /v1/sensor/${currentIncident.host}/isolation -> SUCCESS</span>`;
+      stream.prepend(row);
 
       alert(`✅ Containment Executed via Cloud API!\n\nTarget Host: ${currentIncident.host}\nAction: Host Isolated from local & public networks.\nSensor State: Isolated (C2 Severed, Forensic Channel Active).`);
     }
@@ -456,17 +1455,19 @@
     function runLiveTriage() {
       const stream = document.getElementById("termStream");
       const time = new Date().toISOString().substring(11, 19);
-      const line = document.createElement("div");
-      line.className = "term-line";
-      line.innerHTML = `<span class="term-time">[${time} UTC]</span> <span class="term-success">[✓] Live Triage Script (RFC 3227) executed on ${currentIncident.host}. Sockets, processes & persistence dumped to C:\\LabAttacks\\Triage.</span>`;
-      stream.prepend(line);
+      const row = document.createElement("div");
+      row.className = "term-row";
+      row.innerHTML = `<span class="term-ts">[${time} UTC]</span> <span class="term-ok">[✓] Live Triage Script (RFC 3227) executed on ${currentIncident.host}. Sockets, processes & persistence dumped to C:\\LabAttacks\\Triage.</span>`;
+      stream.prepend(row);
 
       alert(`🔬 Live Forensic Triage Initiated!\n\nExecuted: collect_triage.ps1 on ${currentIncident.host}\nAcquired: Active network sockets, process tree, user sessions, and registry persistence.`);
     }
 
     function filterCategory(cat) {
-      document.querySelectorAll(".tab-pill").forEach(p => p.classList.remove("active"));
-      event.target.classList.add("active");
+      document.querySelectorAll(".filter-btn").forEach(p => p.classList.remove("active"));
+      if (window.event && window.event.target) {
+        window.event.target.classList.add("active");
+      }
       if (cat === "ALL") {
         renderTable(incidents);
       } else {
@@ -485,17 +1486,55 @@
       renderTable(filtered);
     }
 
-    function switchView(view) {
-      if (view === 'fleet') {
+    function switchNav(nav) {
+      if (nav === 'fleet') {
         alert("Sensor Fleet View:\n\n• WIN10-ENT-LAB (Windows 10 Enterprise) - Sensor Active\n• WORKSTATION-FINANCE (Windows 11 Pro) - Sensor Active\n• UBUNTU-WAZUH-GW (Ubuntu 22.04 LTS) - Sensor Active");
-      } else if (view === 'soar') {
+      } else if (nav === 'soar') {
         alert("SOAR Automation Pipeline:\n\n• Story: LimaCharlie EDR to Slack & VirusTotal\n• Nodes: 4 Active\n• Webhook Latency: 0.8s\n• Last Run: 2 minutes ago (Success)");
-      } else if (view === 'mitre') {
+      } else if (nav === 'mitre') {
         window.open('https://mitre-attack.github.io/attack-navigator/', '_blank');
+      } else if (nav === 'triage') {
+        runLiveTriage();
+      } else if (nav === 'intel') {
+        alert("VirusTotal Threat Feed:\n\n• API Status: Online\n• Requests today: 42\n• Malicious detections: 4 IOCs enriched.");
+      } else if (nav === 'settings') {
+        alert("Settings:\n\n• Tenant: dil-soc-lab\n• LimaCharlie Cloud API: Connected\n• Webhook Engine: Tines Community Cloud");
       }
     }
 
-    // Initial render
+    function simulateNewDetection() {
+      const time = new Date().toISOString().substring(11, 19);
+      const stream = document.getElementById("termStream");
+      const row = document.createElement("div");
+      row.className = "term-row";
+      row.innerHTML = `<span class="term-ts">[${time} UTC]</span> <span class="term-alert">SIMULATION TRIGGER: Atomic Red Team test executed. Webhook sent to Tines.</span>`;
+      stream.prepend(row);
+      alert("⚡ Threat Simulation Triggered!\n\nPayload: Atomic Red Team T1003.001\nSOAR Story executed: Alert -> Enrich -> Slack Notification.");
+    }
+
+    function exportReport() {
+      alert("📄 Telemetry Export Generated!\n\nExported: 7 Incidents, VT Reputations, and Live Forensic Artifacts to incident_report.json.");
+    }
+
+    function toggleTheme() {
+      const isDark = document.body.classList.toggle("dark-theme");
+      const btn = document.getElementById("themeToggleBtn");
+      if (isDark) {
+        btn.innerHTML = "<span>☀️</span>";
+        localStorage.setItem("donezo_theme", "dark");
+      } else {
+        btn.innerHTML = "<span>🌙</span>";
+        localStorage.setItem("donezo_theme", "light");
+      }
+    }
+
+    if (localStorage.getItem("donezo_theme") === "dark") {
+      document.body.classList.add("dark-theme");
+      const btn = document.getElementById("themeToggleBtn");
+      if (btn) btn.innerHTML = "<span>☀️</span>";
+    }
+
+    // Initial load
     renderTable(incidents);
     selectIncident(currentIncident);
   </script>
