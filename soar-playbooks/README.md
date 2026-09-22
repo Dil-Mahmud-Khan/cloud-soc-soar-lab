@@ -41,3 +41,16 @@ python3 soar_pipeline.py
 * Formats Slack Block Kit JSON cards with interactive buttons.
 * Prompts the analyst for human-in-the-loop confirmation.
 * Sends network isolation commands to LimaCharlie REST API (`/v1/sensor/{sensor_id}/isolation`).
+
+---
+
+## 3. Visual Evidence & Playbook Artifacts
+
+* **Tines Visual SOAR Canvas:**  
+  ![Tines Canvas](../docs/screenshots/soar-containment/01-tines-soar-canvas.png)
+
+* **Interactive Slack Incident Card (#soc-alerts):**  
+  ![Slack Alert Card](../docs/screenshots/soar-containment/02-slack-alert-card.png)
+
+* **Endpoint Network Isolation Proof on Host `dil`:**  
+  ![Network Isolation Verified](../docs/screenshots/soar-containment/03-network-isolation-verified.png)

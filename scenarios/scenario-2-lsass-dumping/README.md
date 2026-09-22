@@ -66,3 +66,13 @@ respond:
 
 * **Classification:** P1 Critical Incident.
 * **Immediate Response:** Host network isolation must be executed within 60 seconds to prevent the adversary from exfiltrating the `.dmp` file or using stolen hashes for lateral movement.
+
+---
+
+## 5. Visual Evidence & Screenshots
+
+* **LSASS Memory Dump Execution on Host `dil`:**  
+  ![LSASS Dump Execution](../../docs/screenshots/test-2-lsass/01-lsass-dump-execution.png)
+
+* **LimaCharlie P1 Critical Alert:**  
+  ![LimaCharlie LSASS Alert](../../docs/screenshots/test-2-lsass/02-lsass-limacharlie-alert.png)

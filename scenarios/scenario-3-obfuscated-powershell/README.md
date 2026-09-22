@@ -72,3 +72,13 @@ respond:
 1. Extract the Base64 encoded payload from the command line telemetry.
 2. In CyberChef or PowerShell, decode from Base64 (using UTF-16LE / Unicode character encoding).
 3. Inspect the decoded commands to determine if the script attempted network connections, downloaded droppers, or modified registry keys.
+
+---
+
+## 5. Visual Evidence & Screenshots
+
+* **Encoded PowerShell Execution & Inline Decoding on Host `dil`:**  
+  ![Encoded PowerShell Execution](../../docs/screenshots/test-3-powershell/01-encoded-powershell-execution.png)
+
+* **LimaCharlie EDR Encoded Execution Alert:**  
+  ![LimaCharlie PowerShell Alert](../../docs/screenshots/test-3-powershell/02-powershell-edr-alert.png)

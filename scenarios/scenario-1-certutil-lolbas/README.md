@@ -74,3 +74,16 @@ respond:
 3. Tines queries the VirusTotal API -> 58/72 engines confirm malicious score.
 4. Tines alerts the SOC Slack channel.
 5. Analyst clicks **[ Isolate Machine ]** -> LimaCharlie isolates the Windows host within seconds.
+
+---
+
+## 5. Visual Evidence & Screenshots
+
+* **Attack Execution on Host `dil`:**  
+  ![Certutil Execution](../../docs/screenshots/test-1-certutil/01-certutil-execution.png)
+
+* **LimaCharlie EDR Detection Alert:**  
+  ![LimaCharlie Alert](../../docs/screenshots/test-1-certutil/02-limacharlie-certutil-alert.png)
+
+* **EDR Process Tree Lineage:**  
+  ![Process Tree](../../docs/screenshots/test-1-certutil/03-process-tree.png)
