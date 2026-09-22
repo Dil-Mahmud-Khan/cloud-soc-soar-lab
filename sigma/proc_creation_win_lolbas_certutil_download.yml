@@ -1,0 +1,33 @@
+title: Suspicious Certutil Ingress File Download
+id: 5a73e6d2-3c81-4712-9842-1204859a1122
+status: experimental
+description: Detects the execution of certutil.exe with arguments typically used to download unauthorized files from remote sources (LOLBAS).
+references:
+  - https://attack.mitre.org/techniques/T1105/
+  - https://lolbas-project.github.io/lolbas/Binaries/Certutil/
+author: Dil Mahmud Khan
+date: 2026-09-22
+tags:
+  - attack.t1105
+  - attack.defense_evasion
+  - attack.command_and_control
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_img:
+    - Image|endswith: '\certutil.exe'
+    - OriginalFileName: 'CertUtil.exe'
+  selection_flags_urlcache:
+    CommandLine|contains:
+      - '-urlcache'
+      - '/urlcache'
+  selection_flags_split:
+    CommandLine|contains:
+      - '-split'
+      - '/split'
+      - '-f'
+  condition: selection_img and selection_flags_urlcache and selection_flags_split
+falsepositives:
+  - Rare enterprise software distribution scripts (should be whitelisted by full path)
+level: high

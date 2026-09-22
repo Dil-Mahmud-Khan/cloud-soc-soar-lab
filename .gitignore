@@ -1,0 +1,7 @@
+# Ignore temporary test artifacts
+*.tmp
+*.dmp
+*.log
+__pycache__/
+.env
+.DS_Store

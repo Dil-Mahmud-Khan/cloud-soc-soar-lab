@@ -1,0 +1,18 @@
+detect:
+  event: NEW_PROCESS
+  op: and
+  rules:
+    - op: ends with
+      path: event/FILE_PATH
+      value: certutil.exe
+    - op: contains
+      path: event/COMMAND_LINE
+      value: -urlcache
+    - op: contains
+      path: event/COMMAND_LINE
+      value: -split
+
+respond:
+  - action: report
+    name: "T1105 - Ingress Tool Transfer via Certutil.exe"
+    publish: true

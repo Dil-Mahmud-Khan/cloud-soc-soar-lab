@@ -1,0 +1,29 @@
+title: Obfuscated PowerShell Command-Line Execution
+id: c381944e-1284-4821-bc01-9a7428120042
+status: test
+description: Detects the execution of PowerShell with encoded commands or execution policy bypass switches commonly used in dropper stages.
+references:
+  - https://attack.mitre.org/techniques/T1059/001/
+author: Dil Mahmud Khan
+date: 2026-09-22
+tags:
+  - attack.t1059.001
+  - attack.execution
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_img:
+    - Image|endswith:
+        - '\powershell.exe'
+        - '\pwsh.exe'
+  selection_flags:
+    CommandLine|contains:
+      - '-EncodedCommand'
+      - '-enc'
+      - '-e '
+      - '-ExecutionPolicy Bypass'
+  condition: selection_img and selection_flags
+falsepositives:
+  - Administrative deployment tools (SCCM, Chocolatey, IT onboarding scripts)
+level: medium

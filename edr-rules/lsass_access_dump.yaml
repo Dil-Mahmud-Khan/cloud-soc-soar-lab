@@ -1,0 +1,28 @@
+# ==============================================================================
+# Rule Name: Detect LSASS Memory Dumping via Comsvcs.dll
+# Author: Dil Mahmud Khan
+# MITRE ATT&CK: T1003.001 - OS Credential Dumping: LSASS Memory
+# Severity: Critical
+# Description: Detects rundll32 calling the native comsvcs.dll MiniDump export.
+#              This is a common living-off-the-land technique used to dump
+#              credentials without dropping Mimikatz binaries to disk.
+# ==============================================================================
+
+detect:
+  event: NEW_PROCESS
+  op: and
+  rules:
+    - op: ends with
+      path: event/FILE_PATH
+      value: rundll32.exe
+    - op: contains
+      path: event/COMMAND_LINE
+      value: comsvcs.dll
+    - op: contains
+      path: event/COMMAND_LINE
+      value: MiniDump
+
+respond:
+  - action: report
+    name: "T1003.001 - Credential Dumping via Comsvcs MiniDump"
+    publish: true

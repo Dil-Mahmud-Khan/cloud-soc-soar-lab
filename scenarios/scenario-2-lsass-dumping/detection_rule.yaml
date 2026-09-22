@@ -1,0 +1,18 @@
+detect:
+  event: NEW_PROCESS
+  op: and
+  rules:
+    - op: ends with
+      path: event/FILE_PATH
+      value: rundll32.exe
+    - op: contains
+      path: event/COMMAND_LINE
+      value: comsvcs.dll
+    - op: contains
+      path: event/COMMAND_LINE
+      value: MiniDump
+
+respond:
+  - action: report
+    name: "T1003.001 - Credential Dumping via Comsvcs MiniDump"
+    publish: true
